@@ -2,12 +2,12 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import index from '@/views/pages/index.vue'
 import login from '@/views/pages/login.vue'
-import article from '@/views/pages/article.vue'
+import article from '@/views/pages/article/index'
 /* 用户个人信息组件 */
 import user from '@/views/pages/user.vue'
-import profile from '@/components/user/profile.vue'
-import account from '@/components/user/account.vue'
-import collection from '@/components/user/collection.vue'
+import profile from '@/components/user/profile/index'
+import account from '@/components/user/account/index'
+import collection from '@/components/user/collection/index'
 
 /* 测试链接 */
 import test from '@/views/test/index.vue'

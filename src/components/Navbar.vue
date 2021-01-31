@@ -5,8 +5,8 @@
       <a class="header-logo" href="#"></a>
       <!-- 网页导航栏内容 -->
       <ul class="navbar-menu">
-        <li class="menu-item"><a href="#">最新活动</a></li>
-        <li class="menu-item navbar-this"><a href="#">产品</a></li>
+        <li class="menu-item"><a href="/">首页</a></li>
+        <li class="menu-item navbar-this"><a href="/test">测试</a></li>
         <li class="menu-item"><a href="#">大数据</a></li>
         <li class="menu-item"><a href="#">社区</a></li>
       </ul>

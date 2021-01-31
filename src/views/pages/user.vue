@@ -4,21 +4,28 @@
     <!-- 左部侧边栏开始 -->
     <div class="main-left">
       <ul>
-        <li class="link-active">
-          <a href="/user/profile">个人资料</a>
-        </li>
-        <li>
-          <a href="/user/account">账号设置</a>
-        </li>
-        <li>
-          <a href="/user/collection">我的收藏</a>
-        </li>
+        <router-link tag="li" to="/user/profile">
+          <a 
+          href="javascript:;"
+          class="">个人资料</a>
+        </router-link>
+        <!-- <li class="link-active"></li> -->
+        <router-link tag="li" to="/user/account">
+          <a 
+          href="javascript:void(0);"
+          class="">账号设置</a>
+        </router-link>
+        <router-link tag="li" to="/user/collection">
+          <a 
+          href="javascript:void(0);"
+          class="">我的收藏</a>
+        </router-link>
       </ul>
     </div>
     <!-- 左部侧边栏结束 -->
     <!-- 右部内容栏开始 -->
     <div class="main-right">
-        <router-view></router-view>
+      <router-view></router-view>
     </div>
     <!-- 右部内容栏结束 -->
   </div>
@@ -27,8 +34,9 @@
 
 <script>
 export default {
-  name: 'user'
-}
+  name: "user",
+  
+};
 </script>
 
 <style lang="less" scoped>
@@ -55,12 +63,12 @@ export default {
   font-size: 14px;
   padding: 8px 0;
 }
-.main-left .link-active {
+.main-left .router-link-active {
   font-weight: 500;
   color: #222226;
   background: #f0f0f5;
 }
-.main-left .link-active a {
+.main-left .router-link-active a {
   color: #222226;
 }
 .main-left ul a {

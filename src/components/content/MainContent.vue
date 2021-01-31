@@ -28,7 +28,7 @@
                 </a>
               </div>
             </div>
-            <a href="/login" target="_blank">
+            <a href="/article" target="_blank">
               <div class="content-area">
                 <img
                   style="width: 200px; height: 200px; margin-right: 10px"
@@ -71,7 +71,7 @@
             0
           </a>
           <!-- 评论 -->
-          <a href="/login" target="_blank" class="flex-item">
+          <a href="/article" target="_blank" class="flex-item">
             <svg
               t="1611229879421"
               class="icon"

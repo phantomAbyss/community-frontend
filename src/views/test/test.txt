@@ -1,0 +1,424 @@
+<template>
+  <div class="base-info" id="base-info">
+    <div class="base-info-head">基本信息</div>
+    <div class="base-info-content">
+      <div class="base-info-content-show" v-if="!isEdit" @click="goEdit">
+        <ul>
+          <li>
+            <div class="content-show-l">用户昵称</div>
+            <div class="content-show-r">{{baseInfo.nickname}}</div>
+          </li>
+          <li>
+            <div class="content-show-l"><span>用</span><span>户</span><span>ID</span></div>
+            <div class="content-show-r">{{baseInfo.id}}</div>
+          </li>
+          <li>
+            <div class="content-show-l">真实姓名</div>
+            <div class="content-show-r" :class="{'no-data': !baseInfo.realName}">{{baseInfo.realName || '未填写'}}</div>
+          </li>
+          <li>
+            <div class="content-show-l"><span>性</span><span>别</span></div>
+            <div class="content-show-r">
+              <!-- <img src="@/assets/images/male.png" alt="" v-if="baseInfo.gender === 1"> -->
+              <!-- <img src="@/assets/images/female.png" alt="" v-else> -->
+            </div>
+          </li>
+          <li>
+            <div class="content-show-l">个人简介</div>
+            <div class="content-show-r" :class="{'no-data': !baseInfo.intro}">{{baseInfo.intro || '未填写'}}</div>
+          </li>
+          <li>
+            <div class="content-show-l">所在地区</div>
+            <div class="content-show-r" :class="{'no-data': !baseInfo.province.name && !baseInfo.city.name}">{{baseInfo.province.name || baseInfo.city.name ? `${baseInfo.province.name}-${baseInfo.city.name}` : '未选择'}}</div>
+          </li>
+          <li>
+            <div class="content-show-l">出生日期</div>
+            <div class="content-show-r" :class="{'no-data': !baseInfo.birthday}">{{baseInfo.birthday ? formatTime(baseInfo.birthday): '未设置'}}</div>
+          </li>
+          <li>
+            <div class="content-show-l">开始工作</div>
+            <div class="content-show-r" :class="{'no-data': !baseInfo.startWork}">{{baseInfo.startWork ? formatTime(baseInfo.startWork, 'YYYY-MM') : '未选择'}}</div>
+          </li>
+        </ul>
+        <div class="edit-icon"><i></i>编辑</div>
+      </div>
+      <div class="base-info-content-edit" v-else>
+        <el-form :model="updateBaseInfoData" :rules="rules" ref="baseInfoForm" hide-required-asterisk inline label-position="top" class="base-info-edit-form">
+          <el-form-item label="用户昵称" prop="nickname" class="edit-nickname">
+            <el-input v-model="updateBaseInfoData.nickname" placeholder="请输入昵称" :disabled="!!updateBaseInfoData.modifyTime"></el-input>
+            <div class="edit-nickname-modifyTime">
+              <span>每月仅支持修改 1 次</span>
+              <span v-if="updateBaseInfoData.modifyTime"> ｜ {{formatTime(updateBaseInfoData.modifyTime)}} 可再次修改</span>
+            </div>
+          </el-form-item>
+          <el-form-item label="用户ID" prop="id">
+            <el-input v-model="updateBaseInfoData.id" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="真实姓名" prop="realName">
+            <el-input v-model="updateBaseInfoData.realName" :disabled="!updateBaseInfoData.nameModify"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="gender" class="edit-gender">
+            <el-radio v-model="updateBaseInfoData.gender" :label="1" border>男</el-radio>
+            <el-radio v-model="updateBaseInfoData.gender" :label="2" border>女</el-radio>
+          </el-form-item>
+          <el-form-item label="出生日期" prop="birthday">
+            <el-date-picker
+              v-model="updateBaseInfoData.birthday"
+              type="date"
+              value-format="timestamp"
+              placeholder="请设置您的出生日期">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="开始工作" prop="startWork">
+            <el-date-picker
+              v-model="updateBaseInfoData.startWork"
+              type="month"
+              value-format="timestamp"
+              placeholder="请选择你开始工作的时间">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="所在地区" prop="area">
+            <el-cascader :props="areaProps" v-model="updateBaseInfoData.area" placeholder="请选择地区"></el-cascader>
+          </el-form-item>
+          <el-form-item label="个人简介" prop="intro" class="edit-intro">
+            <el-input type="textarea" v-model="updateBaseInfoData.intro" :maxlength="300" resize="none" placeholder="你很懒，还没有添加简介"></el-input>
+          </el-form-item>
+          <el-form-item class="edit-btn">
+            <el-button round size="small" class="edit-btn-cancel" @click="cancelEdit">取消</el-button>
+            <el-button type="primary" size="small" class="edit-btn-save" round @click="changeBaseInfo" data-report-click='{"spm":"3001.5423"}'>保存</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import service from '@/common/service/BaseInfo'
+import moment from 'moment'
+
+export default {
+  name: 'baseInfo',
+  props: ['baseInfo'], // 展示的baseInfo
+  data () {
+    return {
+      isEdit: false,
+      // 编辑的baseInfo数据
+      updateBaseInfoData: {
+        nickname: '',
+        id: '',
+        realName: '',
+        gender: 1,
+        intro: '',
+        area: [],
+        birthday: '',
+        startWork: '',
+        modifyTime: null,
+        nameModify: true
+      },
+      rules: {
+        nickname: [
+          { required: true, message: '昵称不能为空', trigger: 'blur' },
+          { min: 2, max: 20, message: '昵称长度需在 2 到 20 个字符', trigger: 'blur' }
+        ],
+        realName: [
+          { pattern: /^(?:[\u4e00-\u9fa5·]{2,16})$/, message: '请输入正确的姓名', trigger: 'blur' }
+        ],
+        startWork: [
+          {
+            validator: (rule, value, callback) => {
+              if (value && this.updateBaseInfoData.birthday) {
+                if (value < this.updateBaseInfoData.birthday) {
+                  callback(new Error('生日不可大于开始工作时间'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur' }
+        ]
+      },
+      areaProps: {
+        lazy: true,
+        lazyLoad (node, resolve) {
+          const { level, root, value } = node
+          if (root) {
+            // 获取省的数据
+            service.getProvinceList().then(data => {
+              if (data.code === 200) {
+                let nodes = data.data.map(item => {
+                  return {
+                    value: item.id,
+                    label: item.name,
+                    leaf: level >= 1
+                  }
+                })
+                resolve(nodes)
+              }
+            })
+          } else {
+            // 获取市数据
+            service.getCityList(value).then(data => {
+              if (data.code === 200) {
+                let nodes = data.data.map(item => {
+                  return {
+                    value: item.id,
+                    label: item.name,
+                    leaf: level >= 1
+                  }
+                })
+                resolve(nodes)
+              }
+            })
+          }
+        }
+      }
+    }
+  },
+  methods: {
+    changeBaseInfo () {
+      window.csdn.userLogin.loadAjax(() => {
+        this.$refs.baseInfoForm.validate(valid => {
+          if (valid) {
+            // 重新拼编辑需要的数据
+            let data = Object.assign({}, this.updateBaseInfoData)
+            data.provinceId = data.area[0]
+            data.cityId = data.area[1]
+            delete data.id
+            delete data.area
+            delete data.modifyTime
+            delete data.nameModify
+            service.updateBaseInfo(data).then(data => {
+              if (data.code === 200) {
+                this.$emit('changeBaseInfo', data.data)
+                this.isEdit = false
+                this.$message({
+                  message: '编辑保存成功',
+                  type: 'success'
+                })
+              } else {
+                this.$message.error(data.msg || '接口异常')
+              }
+            })
+          } else {
+            return false
+          }
+        })
+      })
+    },
+    cancelEdit () {
+      this.isEdit = false
+      this.setUpdateBaseInfoData()
+    },
+    // 编辑
+    goEdit () {
+      this.isEdit = true
+    },
+    // 设置编辑的baseInfo
+    setUpdateBaseInfoData () {
+      let result = Object.assign({}, this.baseInfo)
+      result.area = (result.province.name && result.city.name) ? [result.province.id, result.city.id] : []
+      delete result.province
+      delete result.city
+      this.updateBaseInfoData = result
+    },
+    // 格式化时间
+    formatTime (timestamp, format = 'YYYY-MM-DD') {
+      return moment(timestamp).format(format)
+    }
+  }
+}
+</script>
+
+<style scoped lang="less">
+.base-info {
+  width: 998px;
+  padding: 24px 16px 16px 16px;
+  background: #fff;
+  margin-bottom: 16px;
+  .base-info-head {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+    color: #2E2E2E;
+    margin-bottom: 16px;
+  }
+  .base-info-content {
+    .base-info-content-show {
+      cursor: pointer;
+      padding: 16px 112px 16px 0;
+      position: relative;
+      &:hover {
+        background: #F8F8F8;
+        .edit-icon {
+          display: flex;
+        }
+      }
+      ul {
+        li {
+          line-height: 24px;
+          font-size: 14px;
+          margin-bottom: 32px;
+          display: flex;
+          .content-show-l {
+            width: 56px;
+            color: #555666;
+            margin-right: 40px;
+            flex-shrink: 0;
+            padding-left: 16px;
+            display: flex;
+            box-sizing: content-box;
+            justify-content: space-between;
+          }
+          .content-show-r {
+            color: #222226;
+            word-break: break-all;
+            img {
+              width: 24px;
+              height: 24px;
+              display: block;
+            }
+          }
+          .content-show-r.no-data {
+            color: #999AAA;
+          }
+          &:nth-last-child(1) {
+            margin-bottom: 0;
+          }
+        }
+      }
+      .edit-icon {
+        display: none;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        align-items: center;
+        color: #1989FA;
+        font-size: 14px;
+        i {
+          display: inline-block;
+          margin-right: 2px;
+          width: 16px;
+          height: 16px;
+          background: url("~@/assets/images/icon-edit.png") no-repeat center;
+          background-size: 16px 16px;
+        }
+        &:hover {
+          color: #409EFF;
+          i {
+            background: url("~@/assets/images/icon-edit-h.png") no-repeat center;
+            background-size: 16px 16px;
+          }
+        }
+      }
+    }
+    .base-info-content-edit {
+      padding: 24px 40px;
+      background: #F8F8F8;
+      .base-info-edit-form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        .el-form-item {
+          width: 419px;
+          margin-right: 0;
+          margin-bottom: 24px;
+          /deep/ .el-form-item__label {
+            line-height: 16px;
+            padding-bottom: 8px;
+          }
+          /deep/ .el-form-item__content {
+            .el-date-editor.el-input,
+            .el-date-editor.el-input__inner,
+            .el-cascader {
+              width: 100%;
+            }
+          }
+        }
+        .edit-nickname {
+          width: 100%;
+          /deep/ .el-form-item__content {
+            display: flex;
+            .el-input {
+              width: 419px;
+            }
+            .edit-nickname-modifyTime {
+              margin-left: 48px;
+              color: #FC5531;
+            }
+          }
+        }
+        .edit-gender {
+          /deep/ .el-form-item__content {
+            display: flex;
+            .is-checked {
+              background: #fff;
+            }
+            & > label {
+              width: 201px;
+              text-align: center;
+              margin-right: 17px;
+              .el-radio__label {
+                line-height: 14px!important;
+              }
+              &:nth-last-child(1) {
+                margin-right: 0;
+                margin-left: 0;
+              }
+              span.el-radio__input {
+                display: none;
+              }
+            }
+          }
+        }
+        .edit-intro {
+          width: 100%;
+          /deep/ textarea {
+            height: 80px;
+          }
+        }
+        .edit-btn {
+          width: 100%;
+          text-align: center;
+          margin-bottom: 0;
+          /deep/ .el-form-item__content {
+            line-height: 32px;
+            display: flex;
+            justify-content: center;
+            button {
+              padding: 5px 26px;
+              span {
+                font-size: 14px;
+                line-height: 20px;
+                display: inline-block;
+              }
+            }
+            .edit-btn-cancel {
+              color: #FC5531;
+              border: 1px solid #FC5531;
+              &:hover {
+                background-color: #FFF5F2;
+              }
+            }
+            .edit-btn-save {
+              background-color: #FC5531;
+              border-color: #FC5531;
+              margin-left: 16px;
+              &:hover {
+                background-color: #FC1944;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
+
+
+
+// WEBPACK FOOTER //
+// src/pages/user-center/profile/baseInfo.vue

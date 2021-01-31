@@ -3,6 +3,7 @@
   <div class="user-profile">
     <!-- 用户的基础信息开始 -->
     <div class="profile-header">
+      <!-- 头像部分信息 -->
       <div class="user-info">
         <div class="user-info-main">
           <div class="user-info-avatar">
@@ -49,10 +50,12 @@
           </div>
         </div>
       </div>
+      <!-- 基础信息 -->
       <div class="base-info">
         <div class="base-info-head">基本信息</div>
         <div class="base-info-content">
           <div class="info-content">
+            <!-- 用户的基础个人信息 -->
             <ul>
               <li>
                 <div class="content-left">用户昵称</div>
@@ -130,6 +133,7 @@
                 <div class="content-right">未填写</div>
               </li>
             </ul>
+            <!-- 用户基础个人信息编辑按钮 -->
             <div class="edit-icon"><i class="el-icon-edit"></i>编辑</div>
           </div>
         </div>
@@ -212,7 +216,10 @@
 
 <script>
 export default {
-  name: 'profile'
+  name: 'profile',
+  methods: {
+    
+  }
 }
 </script>
 
@@ -416,6 +423,9 @@ export default {
   color: #2e2e2e;
   margin-bottom: 16px;
 }
+.base-info-content .info-content:hover {
+  background: #f8f8f8;
+}
 .base-info-content .info-content {
   cursor: pointer;
   padding: 16px 112px 16px 0;
@@ -459,6 +469,9 @@ export default {
   align-items: center;
   color: #1989fa;
   font-size: 14px;
+}
+.info-content .edit-icon:hover {
+  color: #409eff;
 }
 .info-content .edit-icon i {
   display: inline-block;
@@ -509,6 +522,9 @@ export default {
   font-weight: 400;
   font-size: 13px;
   margin-left: 40px;
+}
+.job-content:hover {
+  background: #f8f8f8;
 }
 .job-content {
   height: 168px;

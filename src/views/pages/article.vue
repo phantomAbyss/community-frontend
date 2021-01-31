@@ -4,9 +4,8 @@
     <!-- 面包屑 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/' }">文章列表</el-breadcrumb-item>
+      <el-breadcrumb-item>华为消费者管培求战友</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 文章主题内容开始 -->
     <div class="content">
@@ -218,7 +217,7 @@
                 <div class="comment-detail">
                   <!-- 回帖者的用户名和楼层 -->
                   <p>
-                    <a href="#" target="_blank" class="comment-username"></a>
+                    <a href="#" target="_blank" class="comment-username">phantom</a>
                     <span class="comment-floor">1#</span>
                   </p>
                   <!-- 回帖内容 -->
@@ -415,17 +414,21 @@
             </div>
             <div class="comment-list-item fill-bg">
               <div class="comment-content">
+                <!-- 回帖者的头像 -->
                 <a href="#" target="_blank" class="comment-user-avatar">
                   <img src="@/assets/img/avatar.jpg" alt="评论者头像" />
                 </a>
                 <div class="comment-detail">
+                  <!-- 回帖者的用户名和楼层 -->
                   <p>
-                    <a href="#" target="_blank" class="comment-username"></a>
-                    <span class="comment-floor">2#</span>
+                    <a href="#" target="_blank" class="comment-username">phantom</a>
+                    <span class="comment-floor">1#</span>
                   </p>
+                  <!-- 回帖内容 -->
                   <div class="comment-detail-content">
                     不可以把单链表里面的数取出来变成arraylist然后快排吗？
                   </div>
+                  <!-- 回帖时间、设备、以及回复、赞 -->
                   <div class="comment-eq">
                     <span class="comment-item-time">发表于 昨天 19:49:42</span>
                     <span
@@ -435,24 +438,73 @@
                     <a href="#">赞(0)</a>
                     <a href="#">分享</a>
                   </div>
+                  <!-- 针对于该条评论的回复 -->
                   <div class="comment-reply-list">
+                    <!-- 该条评论的回复列表 -->
                     <div class="reply-list fill-bg">
+                      <!-- 该条评论的回复列表的每一项 -->
                       <div class="reply-list-item">
                         <div class="reply-item-main">
+                          <!-- 用户名 -->
                           <div
                             class="reply-item-user"
                             style="margin-right: 5px"
                           >
                             <a href="#">phantom</a>：
                           </div>
+                          <!-- 回复内容 -->
                           <div class="reply-item-content">
                             字节不是9月份还在招嘛，我回来第一个就裸面的字节，给面试官都面笑了。。
                           </div>
                         </div>
+                        <!-- 回复的时间  回复、赞 -->
                         <div class="comment-eq reply-item-info">
                           <span class="comment-item-time">昨天 22:53:38</span>
                           <a href="#">回复(0)</a>
                           <a href="#">赞(0)</a>
+                        </div>
+                        <!-- 点击回复后显示输入框 -->
+                        <div style="display: block">
+                          <div class="reply-edit">
+                            <div class="reply-write">
+                              <el-input
+                                type="textarea"
+                                autosize
+                                placeholder="元芳，请问你怎么看呢"
+                                v-model="replyContent"
+                              >
+                              </el-input>
+                            </div>
+                            <div class="reply-action">
+                              <a href="#">
+                                <svg
+                                  t="1611544061407"
+                                  class="icon"
+                                  viewBox="0 0 1024 1024"
+                                  version="1.1"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  p-id="2566"
+                                  width="25"
+                                  height="25"
+                                >
+                                  <path
+                                    d="M510.839571 4.351098c-277.514501 0-506.468007 228.952482-506.468007 508.780679 0 279.82922 228.952482 506.468007 506.468007 506.468006 279.828196 0 508.780679-226.637764 508.780678-506.468006 0.001023-279.828196-228.952482-508.780679-508.780678-508.780679z m0.060375 942.733115c-238.924601 0-434.007695-192.896288-434.007695-434.012811S271.976368 76.872808 510.899946 76.872808s436.205756 195.08207 436.205756 436.199617S749.824547 947.084213 510.899946 947.084213z"
+                                    p-id="2567"
+                                    fill="#7171fc"
+                                  ></path>
+                                  <path
+                                    d="M314.266543 513.131777c27.751041 0 50.875714-39.312354 50.875715-85.567841 0-48.567135-23.124673-87.881536-50.875715-87.881537-27.752064 0-50.876738 37.005822-50.876737 85.567841v2.313696c0 46.255487 23.12365 85.567841 50.876737 85.567841zM510.839571 866.966501c134.134976 0 242.827491-108.692514 242.827491-242.827491H268.011057c0 134.134976 108.698654 242.827491 242.828514 242.827491zM707.413622 339.682399c-27.751041 0-50.875714 37.005822-50.875715 85.567841v2.313696c0 46.255487 23.124673 85.567841 50.875715 85.567841s50.881854-39.312354 50.881854-85.567841c0-48.567135-23.130813-87.881536-50.881854-87.881537z"
+                                    p-id="2568"
+                                    fill="#7171fc"
+                                  ></path></svg
+                              ></a>
+                              <el-button
+                                type="primary"
+                                class="comment-reply reply-btn"
+                                >回复</el-button
+                              >
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="reply-list-item">
@@ -473,6 +525,48 @@
                           <span class="comment-item-time">昨天 22:53:38</span>
                           <a href="#">回复(0)</a>
                           <a href="#">赞(0)</a>
+                        </div>
+                        <div style="display: none">
+                          <div class="reply-edit">
+                            <div class="reply-write">
+                              <el-input
+                                type="textarea"
+                                autosize
+                                placeholder="元芳，请问你怎么看呢"
+                                v-model="replyContent"
+                              >
+                              </el-input>
+                            </div>
+                            <div class="reply-action">
+                              <a href="#">
+                                <svg
+                                  t="1611544061407"
+                                  class="icon"
+                                  viewBox="0 0 1024 1024"
+                                  version="1.1"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  p-id="2566"
+                                  width="25"
+                                  height="25"
+                                >
+                                  <path
+                                    d="M510.839571 4.351098c-277.514501 0-506.468007 228.952482-506.468007 508.780679 0 279.82922 228.952482 506.468007 506.468007 506.468006 279.828196 0 508.780679-226.637764 508.780678-506.468006 0.001023-279.828196-228.952482-508.780679-508.780678-508.780679z m0.060375 942.733115c-238.924601 0-434.007695-192.896288-434.007695-434.012811S271.976368 76.872808 510.899946 76.872808s436.205756 195.08207 436.205756 436.199617S749.824547 947.084213 510.899946 947.084213z"
+                                    p-id="2567"
+                                    fill="#7171fc"
+                                  ></path>
+                                  <path
+                                    d="M314.266543 513.131777c27.751041 0 50.875714-39.312354 50.875715-85.567841 0-48.567135-23.124673-87.881536-50.875715-87.881537-27.752064 0-50.876738 37.005822-50.876737 85.567841v2.313696c0 46.255487 23.12365 85.567841 50.876737 85.567841zM510.839571 866.966501c134.134976 0 242.827491-108.692514 242.827491-242.827491H268.011057c0 134.134976 108.698654 242.827491 242.828514 242.827491zM707.413622 339.682399c-27.751041 0-50.875714 37.005822-50.875715 85.567841v2.313696c0 46.255487 23.124673 85.567841 50.875715 85.567841s50.881854-39.312354 50.881854-85.567841c0-48.567135-23.130813-87.881536-50.881854-87.881537z"
+                                    p-id="2568"
+                                    fill="#7171fc"
+                                  ></path></svg
+                              ></a>
+                              <el-button
+                                type="primary"
+                                class="comment-reply reply-btn"
+                                >回复</el-button
+                              >
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
