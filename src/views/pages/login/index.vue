@@ -5,13 +5,11 @@
       <!-- 登录注册按钮开始 -->
       <div class="tabbed">
         <ul class="tab-btn">
-          <li class="tab-selected">
-            <a href="#"> 登录 </a>
+          <li :class="{'tab-selected':isLogin}" @click="changeForm">
+            <a href="javascript:void(0);"> 登录 </a>
           </li>
-          <li>
-            <a href="#">
-              注册
-            </a>
+          <li :class="{'tab-selected':!isLogin}" @click="changeForm">
+            <a href="javascript:void(0);"> 注册 </a>
           </li>
         </ul>
       </div>
@@ -19,7 +17,10 @@
       <!-- 登录和注册的内容 -->
       <div class="wrapper-content">
         <!-- 账号密码登录或者手机注册 -->
-        <login-input></login-input>
+       <div class="login-input">
+         <login-input v-if="isLogin"></login-input>
+         <reg-input v-else></reg-input>
+       </div>
         <!-- 第三方登录 -->
         <other-login></other-login>
       </div>
@@ -29,14 +30,28 @@
 </template>
 
 <script>
-import LoginInput from '@/components/login/LoginInput.vue'
-import OtherLogin from '@/components/login/OtherLogin.vue'
+import LoginInput from '@/views/pages/login/LoginInput.vue'
+import RegInput from '@/views/pages/login/RegInput.vue'
+import OtherLogin from '@/views/pages/login/OtherLogin.vue'
 
 export default {
   name: 'login',
   components: {
     LoginInput,
+    RegInput,
     OtherLogin
+  },
+  data () {
+    return {
+      /* 目前是否处于登录状态 */
+      isLogin: true
+    }
+  },
+  methods: {
+    /* 登录表单和注册表单的切换 */
+    changeForm() {
+      this.isLogin = !this.isLogin;
+    }
   }
 }
 </script>
@@ -96,5 +111,13 @@ a:-webkit-any-link {
   overflow: hidden;
 }
 /* 登录模块的样式结束 */
+.login-input {
+  float: left;
+  width: 450px;
+  border-right: 1px solid #ededed;
+  padding-right: 60px;
+  margin-right: -1px;
+  position: relative;
+}
 /* 登录注册按钮样式结束 */
 </style>

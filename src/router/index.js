@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import index from '@/views/pages/index.vue'
-import login from '@/views/pages/login.vue'
+import index from '@/views/pages/main/index'
+import login from '@/views/pages/login/index'
 import article from '@/views/pages/article/index'
 /* 用户个人信息组件 */
-import user from '@/views/pages/user.vue'
-import profile from '@/components/user/profile/index'
-import account from '@/components/user/account/index'
-import collection from '@/components/user/collection/index'
+import user from '@/views/pages/user/index'
+import profile from '@/views/pages/user/profile/index'
+import account from '@/views/pages/user/account/index'
+import collection from '@/views/pages/user/collection/index'
 
 /* 测试链接 */
 import test from '@/views/test/index.vue'
@@ -36,10 +36,10 @@ const routes = [
     path: '/test',
     name: 'test',
     component: test
-  }, {
-    path: '/login',
-    name: 'login',
-    component: login
+  }, { 
+    path: '/login', 
+    name: 'login', 
+    component: login 
   }
 ]
 

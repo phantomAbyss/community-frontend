@@ -52,3 +52,31 @@
 |   个人中心的编辑功能   |            前台的动态效果已完成，等待后台接口完善            |
 | 文章详情页面的点击效果 | 1、完成评论列表的回复框的动态效果<br/>2、定义了毕业设计的总任务前端的部分 |
 
+### 第三次提交
+
+* 1、重构登录页面的组件，删除了以下文件：
+  * 1、`src/views/pages/login.vue`
+  * 2、`src/components/login`==文件夹
+* 2、重构文章详情页面，删除了以下文件
+  * 1、`src/views/pages/article.vue`
+  * 2、`src/components/user`==文件夹
+  * 3、`src/views/pages/user/account.vue`
+  * 4、`src/views/pages/user/collection.vue`
+  * 5、`src/views/pages/user/profile.vue`
+  * 6、`src/views/pages/user.vue`
+* 3、重构了文章列表页面，删除了以下文件：
+  * 1、`src\views\pages\index.vue`
+  * 2、`src\components\content` == 文件夹
+* 4、重构了header,删除了一下文件：
+  * 1、`src\components\Navbar.vue`
+
+* 5、完成了注册页面的接口测试(包含验证码接口、注册接口)
+* 6、完成了登录页面的接口调试(包含登录接口，首页的昵称)
+* 7、完成了退出功能的接口调试
+
+
+
+## bug记录
+
+* 1、导航栏的首页一直拥有激活样式，点击其他后依然具有激活样式
+* 2、点击登录/注册按钮后不能跳转到具体的登录或者注册，只能先跳到登录，然后在选择注册选项卡

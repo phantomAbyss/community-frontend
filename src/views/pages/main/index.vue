@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import MainContent from '@/components/content/MainContent.vue'
-import ContentBar from '@/components/content/ContentBar.vue'
+import MainContent from '@/views/pages/main/MainContent.vue'
+import ContentBar from '@/views/pages/main/ContentBar.vue'
 export default {
   name: 'index',
   components: {

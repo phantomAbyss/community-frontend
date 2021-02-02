@@ -9,7 +9,7 @@
         <ul>
           <li>
             <div class="content-left">用户昵称</div>
-            <div class="content-right">phantom</div>
+            <div class="content-right">{{baseInfo.nickname}}</div>
           </li>
           <li>
             <div class="content-left">
@@ -17,16 +17,19 @@
               <span>户</span>
               <span>ID</span>
             </div>
-            <div class="content-right">phantom_123</div>
+            <div class="content-right">{{baseInfo.id}}</div>
           </li>
           <li>
             <div class="content-left">真实姓名</div>
-            <div class="content-right">未填写</div>
+            <div class="content-right" :class="{'no-data': !baseInfo.realName}">
+              {{baseInfo.realName || '未填写'}}
+            </div>
           </li>
           <li>
             <div class="content-left"><span>性</span><span>别</span></div>
             <div class="content-right">
               <svg
+                v-if="baseInfo.gender === 1"
                 t="1611579389594"
                 class="icon"
                 viewBox="0 0 1024 1024"
@@ -48,6 +51,7 @@
                 ></path>
               </svg>
               <svg
+                v-else
                 t="1611579411355"
                 class="icon"
                 viewBox="0 0 1024 1024"
@@ -72,15 +76,27 @@
           </li>
           <li>
             <div class="content-left">个人简介</div>
-            <div class="content-right">未填写</div>
+            <div class="content-right" :class="{'no-data': !baseInfo.introduce}">
+              {{baseInfo.introduce || '未填写'}}
+            </div>
           </li>
           <li>
             <div class="content-left">所在地区</div>
-            <div class="content-right">未填写</div>
+            <div class="content-right" :class="{'no-data': !baseInfo.province.name && !baseInfo.city.name}">
+              {{baseInfo.province.name || baseInfo.city.name ? `${baseInfo.province.name}-${baseInfo.city.name}` : '未选择'}}
+            </div>
           </li>
           <li>
             <div class="content-left">出生日期</div>
-            <div class="content-right">未填写</div>
+            <div class="content-right" :class="{'no-data': !baseInfo.birthday}">
+              {{baseInfo.birthday ? formatTime(baseInfo.birthday): '未设置'}}
+            </div>
+          </li>
+          <li>
+            <div class="content-left">开始工作</div>
+            <div class="content-right" :class="{'no-data': !baseInfo.startWork}">
+              {{baseInfo.startWork ? formatTime(baseInfo.startWork, 'YYYY-MM') : '未选择'}}
+            </div>
           </li>
         </ul>
         <!-- 用户基础个人信息编辑按钮 -->
@@ -89,9 +105,9 @@
       <!-- 基本信息的修改界面 -->
       <div class="info-content-edit" v-else>
         <el-form
-          :model="updateUserInfo"
+          :model="updatebaseInfo"
           :rules="rules"
-          ref="userInfoForm"
+          ref="baseInfoForm"
           hide-required-asterisk
           inline
           label-position="top"
@@ -99,38 +115,38 @@
         >
           <el-form-item label="用户昵称" prop="nickname" class="edit-nickname">
             <el-input
-              v-model="updateUserInfo.nickname"
+              v-model="updatebaseInfo.nickname"
               placeholder="请输入昵称"
-              :disabled="!!updateUserInfo.modifyTime"
+              :disabled="!!updatebaseInfo.modifyTime"
             ></el-input>
             <div class="edit-nickname-info">
               <span>每月仅支持修改 1 次</span>
-              <span v-if="updateUserInfo.modifyTime">
+              <span v-if="updatebaseInfo.modifyTime">
                 ｜
-                {{ formatTime(updateUserInfo.modifyTime) }} 可再次修改</span
+                {{ formatTime(updatebaseInfo.modifyTime) }} 可再次修改</span
               >
             </div>
           </el-form-item>
           <el-form-item label="用户ID" prop="userId">
-            <el-input v-model="updateUserInfo.id" disabled></el-input>
+            <el-input v-model="updatebaseInfo.id" disabled></el-input>
           </el-form-item>
           <el-form-item label="真实姓名" prop="realName">
             <el-input
-              v-model="updateUserInfo.realName"
-              :disabled="!updateUserInfo.nameModify"
+              v-model="updatebaseInfo.realName"
+              :disabled="!updatebaseInfo.nameModify"
             ></el-input>
           </el-form-item>
           <el-form-item label="性别" prop="gender" class="edit-gender">
-            <el-radio v-model="updateUserInfo.gender" :label="1" border
+            <el-radio v-model="updatebaseInfo.gender" :label="1" border
               >男</el-radio
             >
-            <el-radio v-model="updateUserInfo.gender" :label="2" border
+            <el-radio v-model="updatebaseInfo.gender" :label="2" border
               >女</el-radio
             >
           </el-form-item>
           <el-form-item label="出生日期" prop="birthday">
             <el-date-picker
-              v-model="updateUserInfo.birthday"
+              v-model="updatebaseInfo.birthday"
               type="date"
               value-format="timestamp"
               placeholder="请设置您的出生日期"
@@ -139,7 +155,7 @@
           </el-form-item>
           <el-form-item label="开始工作" prop="startWork">
             <el-date-picker
-              v-model="updateUserInfo.startWork"
+              v-model="updatebaseInfo.startWork"
               type="month"
               value-format="timestamp"
               placeholder="请选择你开始工作的时间"
@@ -149,7 +165,7 @@
           <el-form-item label="所在地区" prop="area">
             <el-cascader
               :props="areaProps"
-              v-model="updateUserInfo.area"
+              v-model="updatebaseInfo.area"
               placeholder="请选择地区"
             ></el-cascader>
           </el-form-item>
@@ -160,7 +176,7 @@
           >
             <el-input
               type="textarea"
-              v-model="updateUserInfo.intro"
+              v-model="updatebaseInfo.intro"
               :maxlength="300"
               resize="none"
               placeholder="你很懒，还没有添加简介"
@@ -195,13 +211,13 @@ import moment from "moment";
 
 export default {
   name: "baseInfo",
-  props: ["userInfo"],
+  props: ['baseInfo'],
   data() {
     return {
       //基本信息编辑框是否开启
       isEdit: false,
       //基本框的编辑数据
-      updateUserInfo: {
+      updatebaseInfo: {
         userId: "",
         nickname: "",
         realName: "",
@@ -233,8 +249,8 @@ export default {
         startWork: [
           {
             validator: (rule, value, callback) => {
-              if (value && this.updateUserInfo.birthday) {
-                if (value < this.updateUserInfo.birthday) {
+              if (value && this.updatebaseInfo.birthday) {
+                if (value < this.updatebaseInfo.birthday) {
                   callback(new Error("您这是从娘胎里面就开始工作了吗(•ิ_•ิ)?"));
                 } else {
                   callback();
@@ -263,7 +279,7 @@ export default {
   methods: {
     /* 提交修改信息 */
     update() {
-      this.$refs.userInfoForm.validate((valid) => {
+      this.$refs.baseInfoForm.validate((valid) => {
         if (valid) {
           alert("数据正常，可以提交");
         } else {
