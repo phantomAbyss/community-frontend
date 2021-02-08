@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import breadcrumb from "./breadcrumb";
+import breadcrumb from "@/components/breadcrumb";
 import articleContent from "./articleContent";
 export default {
   name: "index",

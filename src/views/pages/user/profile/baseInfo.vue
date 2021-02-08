@@ -9,7 +9,7 @@
         <ul>
           <li>
             <div class="content-left">用户昵称</div>
-            <div class="content-right">{{baseInfo.nickname}}</div>
+            <div class="content-right">{{ baseInfo.nickname }}</div>
           </li>
           <li>
             <div class="content-left">
@@ -17,12 +17,15 @@
               <span>户</span>
               <span>ID</span>
             </div>
-            <div class="content-right">{{baseInfo.id}}</div>
+            <div class="content-right">{{ baseInfo.id }}</div>
           </li>
           <li>
             <div class="content-left">真实姓名</div>
-            <div class="content-right" :class="{'no-data': !baseInfo.realName}">
-              {{baseInfo.realName || '未填写'}}
+            <div
+              class="content-right"
+              :class="{ 'no-data': !baseInfo.realName }"
+            >
+              {{ baseInfo.realName || "未填写" }}
             </div>
           </li>
           <li>
@@ -76,26 +79,48 @@
           </li>
           <li>
             <div class="content-left">个人简介</div>
-            <div class="content-right" :class="{'no-data': !baseInfo.introduce}">
-              {{baseInfo.introduce || '未填写'}}
+            <div
+              class="content-right"
+              :class="{ 'no-data': !baseInfo.introduce }"
+            >
+              {{ baseInfo.introduce || "未填写" }}
             </div>
           </li>
           <li>
             <div class="content-left">所在地区</div>
-            <div class="content-right" :class="{'no-data': !baseInfo.province.name && !baseInfo.city.name}">
-              {{baseInfo.province.name || baseInfo.city.name ? `${baseInfo.province.name}-${baseInfo.city.name}` : '未选择'}}
+            <div
+              class="content-right"
+              :class="{
+                'no-data': !baseInfo.province.name && !baseInfo.city.name,
+              }"
+            >
+              {{
+                baseInfo.province.name || baseInfo.city.name
+                  ? `${baseInfo.province.name}-${baseInfo.city.name}`
+                  : "未选择"
+              }}
             </div>
           </li>
           <li>
             <div class="content-left">出生日期</div>
-            <div class="content-right" :class="{'no-data': !baseInfo.birthday}">
-              {{baseInfo.birthday ? formatTime(baseInfo.birthday): '未设置'}}
+            <div
+              class="content-right"
+              :class="{ 'no-data': !baseInfo.birthday }"
+            >
+              {{ baseInfo.birthday ? formatTime(baseInfo.birthday) : "未设置" }}
             </div>
           </li>
           <li>
             <div class="content-left">开始工作</div>
-            <div class="content-right" :class="{'no-data': !baseInfo.startWork}">
-              {{baseInfo.startWork ? formatTime(baseInfo.startWork, 'YYYY-MM') : '未选择'}}
+            <div
+              class="content-right"
+              :class="{ 'no-data': !baseInfo.startWork }"
+            >
+              {{
+                baseInfo.startWork
+                  ? formatTime(baseInfo.startWork, "YYYY-MM")
+                  : "未选择"
+              }}
             </div>
           </li>
         </ul>
@@ -107,7 +132,7 @@
         <el-form
           :model="updatebaseInfo"
           :rules="rules"
-          ref="baseInfoForm"
+          ref="updateForm"
           hide-required-asterisk
           inline
           label-position="top"
@@ -176,7 +201,7 @@
           >
             <el-input
               type="textarea"
-              v-model="updatebaseInfo.intro"
+              v-model="updatebaseInfo.introduce"
               :maxlength="300"
               resize="none"
               placeholder="你很懒，还没有添加简介"
@@ -207,11 +232,12 @@
 </template>
 
 <script>
+import profileService from "@/common/service/user/profile";
 import moment from "moment";
 
 export default {
   name: "baseInfo",
-  props: ['baseInfo'],
+  props: ["baseInfo"],
   data() {
     return {
       //基本信息编辑框是否开启
@@ -260,7 +286,7 @@ export default {
               }
             },
             trigger: "blur",
-          }
+          },
         ],
       },
       areaProps: {
@@ -269,21 +295,66 @@ export default {
           const { level, root, value } = node;
           if (root) {
             // 获取省的数据
+            profileService.getProvinceList().then((res) => {
+              let data = res.data;
+              if (data.code === 200) {
+                let nodes = data.data.map((item) => {
+                  return {
+                    value: item.id,
+                    label: item.name,
+                    leaf: level >= 1,
+                  };
+                });
+                resolve(nodes);
+              }
+            });
           } else {
             // 获取市数据
+            profileService.getCityList(value).then((res) => {
+              let data = res.data;
+              if (data.code === 200) {
+                let nodes = data.data.map((item) => {
+                  return {
+                    value: item.id,
+                    label: item.name,
+                    leaf: level >= 1,
+                  };
+                });
+                resolve(nodes);
+              }
+            });
           }
         },
       },
     };
   },
   methods: {
-    /* 提交修改信息 */
+    /* 提交修改的基础信息 */
     update() {
-      this.$refs.baseInfoForm.validate((valid) => {
+      this.$refs.updateForm.validate((valid) => {
         if (valid) {
-          alert("数据正常，可以提交");
+          // 重新拼编辑需要的数据
+          let data = Object.assign({}, this.updatebaseInfo);
+          data.provinceId = data.area[0];
+          data.cityId = data.area[1];
+          delete data.id;
+          delete data.area;
+          delete data.modifyTime;
+          delete data.nameModify;
+          /* 调用更新函数 */
+          profileService.updateBaseInfo(data).then((res) => {
+            let data = res.data;
+            if (data.code === 200) {
+              this.$emit('update', data.data)
+              this.isEdit = false;
+              this.$message({
+                message: "基础信息修改成功",
+              });
+            } else {
+              this.$message.error(data.msg || "接口异常");
+            }
+          });
         } else {
-          alert("数据格式有误，请检查");
           return false;
         }
       });
@@ -295,6 +366,17 @@ export default {
     /* 取消编辑 */
     cancelEdit() {
       this.isEdit = false;
+    },
+    // 设置编辑的baseInfo
+    setUpdateBaseInfoData() {
+      let result = Object.assign({}, this.baseInfo);
+      result.area =
+        result.province.name && result.city.name
+          ? [result.province.id, result.city.id]
+          : [];
+      delete result.province;
+      delete result.city;
+      this.updatebaseInfo = result;
     },
     /* 格式化时间 */
     formatTime(timestamp, format = "YYYY-MM-DD") {

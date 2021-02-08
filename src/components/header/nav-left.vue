@@ -1,16 +1,33 @@
 <template>
   <div>
     <!-- 网页logo -->
-    <a class="header-logo" href="#"></a>
+    <a class="header-logo" href="/"></a>
     <!-- 网页导航栏内容 -->
     <ul class="navbar-menu">
       <router-link
-        to="/"
+        to="/news"
         tag="li"
         class="menu-item"
         active-class="navbar-this"
       >
         <a href="javascript:void(0);">首页</a>
+      </router-link>
+      <router-link
+        to="/"
+        tag="li"
+        class="menu-item"
+        active-class="navbar-this"
+        exact
+      >
+        <a href="javascript:void(0);">吐槽</a>
+      </router-link>
+      <router-link
+        to="/community"
+        tag="li"
+        class="menu-item"
+        active-class="navbar-this"
+      >
+        <a href="javascript:void(0);">逛一逛</a>
       </router-link>
       <router-link
         to="/test"
@@ -19,22 +36,6 @@
         active-class="navbar-this"
       >
         <a href="javascript:void(0);">测试</a>
-      </router-link>
-      <router-link
-        to="/data"
-        tag="li"
-        class="menu-item"
-        active-class="navbar-this"
-      >
-        <a href="javascript:void(0);">大数据</a>
-      </router-link>
-      <router-link
-        to="/community"
-        tag="li"
-        class="menu-item"
-        active-class="navbar-this"
-      >
-        <a href="javascript:void(0);">社区</a>
       </router-link>
       <!-- <li class="menu-item"><a href="/">首页</a></li>
         <li class="menu-item navbar-this"><a href="/test">测试</a></li>
@@ -53,7 +54,7 @@ export default {
 <style lang="less" scoped>
 /* 网页logo样式开始 */
 .header-logo {
-  background: url(../../assets/img/header-logo.jpg) no-repeat;
+  background: url(~@/assets/img/header-logo.jpg) no-repeat;
   background-size: 100px 50px;
   display: block;
   width: 150px;

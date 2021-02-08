@@ -53,20 +53,27 @@
 </template>
 
 <script>
+import profileService from "@/common/service/user/profile";
 export default {
   name: "interestTag",
   data() {
     return {
-      tagList: [
-        {"select":true,"name":"数据库管理","id":10,"tags":[{"name":"数据库架构","id":125},{"select":true,"name":"DBA","id":126}]},{"name":"硬件开发","id":11,"tags":[{"name":"精益工程","id":139},{"name":"FPGA开发","id":135},{"name":"单片机","id":133}]}
-      ],
+      tagList: [],
       mainIndex: 0,
       subIndex: 0,
     };
   },
+  created () {
+    this.getTagList();
+  },
   methods: {
     getTagList() {
       /* 获取标签列表 */
+      profileService.getTagList().then(res => {
+        if (res.code === 200) {
+          this.tagList = res.data;
+        }
+      })
     },
     /* 选择大标签 */
     chooseTag(index) {
@@ -80,25 +87,51 @@ export default {
       let data = {
         label: subTag.id,
         parentLabel: this.tagList[this.mainIndex].id,
-        followType: 1,
+        followType: 1  //1表示关注成功
       };
       //调用api执行关注
+      profileService.followTag(data).then(res => {
+        if (res.code === 200) {
+          this.subIndex = subIndex;
+          /* 关注某个小标签后修改tagList */
+          this.changeTagListAfterFollow();
+          this.$message({
+            message: '关注成功',
+            type: 'success'
+          })
+        }
+      })
     },
     //取关
-    unfollowTag({ id, parentId }) {
+    unFollowTag({ id, parentId }) {
       let data = {
         label: id,
         parentLabel: parentId,
-        followType: -1,
+        followType: -1   //-1表示取消关注
       };
       // 调用api取消关注
+      profileService.followTag(data).then(res => {
+        if (res.code === 200) {
+          /* 取关后修改标签集 */
+          this.changeTagListAfterUnFollow(id, parentId);
+          this.$message({
+            message: '取关成功',
+            type: 'success'
+          })
+        }
+      })
     },
     // 关注后修改TagList
     changeTagListAfterFollow() {
-      let preTagItem = this.tagList[this.mainTagIndex];
+      let preTagItem = this.tagList[this.mainIndex];
+      /* console.log('tagList[0] = ' + this.tagList[0]);
+      console.log('len = ' + this.tagList.length)
+      console.log('mainIndex = ' + this.mainIndex)
+      console.log('pre = ' + preTagItem) */
       preTagItem.select = true;
-      preTagItem.tags[this.subTagIndex].select = true;
-      this.$set(this.tagList, this.mainTagIndex, preTagItem);
+      preTagItem.tags[this.subIndex].select = true;
+      console.log("关注后修改tagList")
+      this.$set(this.tagList, this.mainIndex, preTagItem);
     },
     // 取消关注后修改TagList
     changeTagListAfterUnFollow(id, parentId) {
@@ -223,11 +256,6 @@ export default {
   border-radius: 4px;
   padding: 16px 16px 0 0;
 }
-.tab-sublist .followed {
-  border: 1px solid #fc5531 !important;
-  color: #fc5531 !important;
-  background: #fff5f2 !important;
-}
 .tag-sub-list li:hover {
   border: 1px solid #222226;
   color: #222226;
@@ -241,6 +269,11 @@ export default {
   line-height: 22px;
   border-radius: 12px;
   border: 1px solid #555666;
+}
+.followed {
+  border: 1px solid #fc5531 !important;
+  color: #fc5531 !important;
+  background: #fff5f2 !important;
 }
 /* 用户的兴趣信息结束 */
 </style>

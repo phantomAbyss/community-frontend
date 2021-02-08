@@ -1,19 +1,19 @@
 <template>
     <!-- 账户设置的头部开始 -->
     <div class="account-head">
-      <span class="account-shield">40</span>
-      <span class="account-desc mid-risk">中风险</span>
-      <p class="account-suggest">
-        账号综合评分状况有风险，请继续完善, 建议：
-        <span>设置密码</span>
-      </p>
+      <span class="account-shield">{{score}}</span>
+      <span v-if="score >= 0 && score <= 30" class="account-desc">有风险</span>
+      <span v-if="score > 30 && score <= 80" class="account-desc middle-risk">中风险</span>
+      <span v-if="score > 80" class="account-desc no-risk">无风险</span>
+      <p v-if="suggest" class="account-suggest">账号综合评分状况有风险，请继续完善, 建议：<span>{{suggest}}</span></p>
     </div>
     <!-- 账户设置的头部结束 -->
 </template>
 
 <script>
 export default {
-  name: 'accountHeader'
+  name: 'accountHeader',
+  props: ['score', 'suggest'],
 }
 </script>
 
@@ -26,7 +26,7 @@ export default {
   box-sizing: border-box;
   padding-top: 24px;
   margin-bottom: 16px;
-  background: url(https://img-home.csdnimg.cn/images/20201223055552.png)
+  background: #fff
     no-repeat 50%;
   background-size: contain;
   font-size: 12px;
@@ -39,7 +39,7 @@ export default {
   height: 100px;
   line-height: 100px;
   margin: auto;
-  background: url(https://img-home.csdnimg.cn/images/20201223055657.png)
+  background: #7171fc
     no-repeat 50%;
   background-size: cover;
   color: #fff;

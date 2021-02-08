@@ -4,7 +4,7 @@
         <!-- 用户头像和用户名 -->
         <div class="user-submenu-top">
           <a href="#">
-            <img class="user-submenu-avatar" src="@/assets/img/avatar.jpg" />
+            <img class="user-submenu-avatar" :src="avatar" />
           </a>
           <span class="user-submenu-nickname">{{name}}</span>
         </div>
@@ -69,7 +69,7 @@
 import { removeUser } from '@/common/utils/auth'
 export default {
   name: "nav-user",
-  props: ['name'],
+  props: ['name', 'avatar'],
   methods: {
     logout () {
       /* 移除cookie的数据 */

@@ -9,7 +9,7 @@
       v-infinite-scroll="load"
       infinite-scroll-disabled="disabled"
     >
-      <li class="content-item" v-for="index in count" :key="index">
+      <li class="content-item" v-for="(item, index) in items" :key="index">
         <!-- 帖子简介展示 -->
         <div class="content-item-box">
           <!-- 头像 -->
@@ -20,17 +20,18 @@
           <div class="content-item-bd">
             <div class="content-info">
               <p>
-                <a href="#" class="name">phantom</a>
+                <a href="#" class="name">{{item.nickname}}</a>
               </p>
               <div class="content-time">
                 <a href="#">
-                  <span>2分钟前</span>
+                  <span>{{item.publishTime}}</span>
                 </a>
               </div>
             </div>
             <a href="/article" target="_blank">
               <div class="content-area">
-                <img
+                {{item.content}}
+                <!-- <img
                   style="width: 200px; height: 200px; margin-right: 10px"
                   src="@/assets/img/avatar.jpg"
                 />
@@ -38,7 +39,7 @@
                   脂肪是如何伴你一生的？如何才能去除这些多余的脂肪？
                   脂肪是如何伴你一生的？如何才能去除这些多余的脂肪？脂肪细胞主要在幼年时期增殖，且这个过程不可逆。如果你小时候是个小胖子，长大后大概率会成为大胖子。
                   脂肪细胞主要在幼年时期增殖，且这个过程不可逆。如果你小时候是个小胖子，长大后大概率会成为大胖子。
-                </p>
+                </p> -->
               </div>
             </a>
           </div>
@@ -125,17 +126,21 @@
 </template>
 
 <script>
+import mainApi from '@/common/service/main/index'
 export default {
   name: 'mainContent',
   data () {
     return {
-      count: 3,
-      loading: false
+      // count: 3,
+      page: 1,
+      loading: false,
+      items: []
     }
   },
   computed: {
     noMore () {
-      return this.count >= 6
+      // return this.count >= 6
+      return this.items.length >= 100;
     },
     disabled () {
       return this.loading || this.noMore
@@ -145,7 +150,12 @@ export default {
     load () {
       this.loading = true
       setTimeout(() => {
-        this.count += 2
+        // this.count += 2
+        this.page++;
+        mainApi.search(this.page, 10, {}).then(res => {
+          this.items = this.items.concat(res.data.data.rows)
+          // alert("len = " + this.items.length);
+        })
         this.loading = false
       }, 2000)
     }
@@ -185,8 +195,9 @@ a:visited {
 }
 .user-avatar {
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
   float: left;
   background: #dadada;
   display: block;
@@ -213,7 +224,7 @@ p {
 }
 .content-info {
   font-size: 16px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   vertical-align: middle;
 }
 .content-info .name {

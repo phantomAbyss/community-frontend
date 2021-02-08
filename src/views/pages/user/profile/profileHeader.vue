@@ -2,7 +2,7 @@
   <!-- 用户的基础信息开始 -->
   <div class="profile-header">
       <!-- 用户头像部分信息 -->
-      <user-avatar></user-avatar>
+      <user-avatar :generalInfo="generalInfo" :nickName="nickName" :userName="userName"></user-avatar>
       <!-- 用户基础信息内容 -->
       <base-info :baseInfo="baseInfo" ref="baseInfo"></base-info>
   </div>
@@ -12,6 +12,8 @@
 <script>
 import userAvatar from './userAvatar';
 import baseInfo from './baseInfo';
+
+import profileService from '@/common/service/user/profile'
 export default {
   name: "profileHeader",
   components: {
@@ -45,6 +47,25 @@ export default {
       },
       nickName: '',
       userName: ''
+    }
+  },
+  created () {
+    this.getBaseInfo();
+  },
+  methods: {
+    getBaseInfo() {
+      profileService.getBaseInfo().then(res => {
+        let data = res.data.data;
+        if (res.data.code == 200) {
+          this.baseInfo = data.baseInfo;
+          this.generalInfo = data.generalInfo;
+          this.nickName = this.baseInfo.nickname;
+          this.userName = this.baseInfo.id;
+          this.$nextTick(() => {
+            this.$refs.baseInfo.setUpdateBaseInfoData();
+          })
+        }
+      })
     }
   }
 };

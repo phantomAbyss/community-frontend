@@ -1,6 +1,6 @@
 import request from '@/common/utils/request'
-const group_name = 'user'
-const api_name = 'index'
+const group_name = 'api'
+const api_name = 'user'
 export default {
     /* 发送验证码 */
     sendCheckCode(mobile) {

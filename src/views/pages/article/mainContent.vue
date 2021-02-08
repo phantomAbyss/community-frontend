@@ -38,9 +38,9 @@
               </span>
               <div class="article-other">
                 <span class="article-time"> 编辑于 今天 11:26:04 </span>
-                <span class="article-eq">
+                <!-- <span class="article-eq">
                   来自<a href="#" class="link-green">iOS客户端</a>
-                </span>
+                </span> -->
                 <div class="article-info">
                   <span style="cursor: pointer" class="article-like">
                     赞 0

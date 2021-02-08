@@ -3,7 +3,7 @@
   <div class="job-info">
     <header>
       <span class="job-info-title">工作信息</span>
-      <span class="job-info-cert">此处为工作认证，如果不做则删除</span>
+      <!-- <span class="job-info-cert">此处为工作认证，如果不做则删除</span> -->
     </header>
     <div class="job-info-content">
       <!-- 工作内容展示 -->
@@ -12,20 +12,23 @@
         <ul>
           <li>
             <div class="content-title">公司名称</div>
-            <div class="content-text" :class="{'has-val': !!jobForm.company}">
-              {{jobForm.company || '未填写' }}
+            <div class="content-text" :class="{ 'has-val': !!jobForm.company }">
+              {{ jobForm.company || "未填写" }}
             </div>
           </li>
           <li>
             <div class="content-title">职位名称</div>
-             <div class="content-text" :class="{'has-val': !!jobForm.position}">
-              {{jobForm.position || '未填写' }}
+            <div
+              class="content-text"
+              :class="{ 'has-val': !!jobForm.position }"
+            >
+              {{ jobForm.position || "未填写" }}
             </div>
           </li>
           <li>
             <div class="content-title">所属行业</div>
-             <div class="content-text" :class="{'has-val': !!jobForm.company}">
-              {{jobForm.industry || '未填写' }}
+            <div class="content-text" :class="{ 'has-val': !!jobForm.company }">
+              {{ jobVal || "未填写" }}
             </div>
           </li>
         </ul>
@@ -56,10 +59,7 @@
           <el-row class="form-edu-row">
             <div>
               <span class="form-item-title">所属行业</span>
-              <el-select
-                v-model="updateJob.industry"
-                placeholder="请选择"
-              >
+              <el-select v-model="updateJob.industry" placeholder="请选择">
                 <el-option
                   v-for="item in jobOptions"
                   :key="item.id"
@@ -82,7 +82,7 @@
               type="primary"
               size="small"
               class="edit-btn-save"
-              @click="editJobList('jobForm')"
+              @click="update('jobForm')"
               >保存</el-button
             >
           </el-row>
@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import profileService from "@/common/service/user/profile";
+import { getUser } from "@/common/utils/auth";
 export default {
   name: "jobInfo",
   data() {
@@ -105,37 +107,115 @@ export default {
         company: "",
         position: "",
         industry: "",
+        status: "",
       },
       /* 工作的更新信息 */
       updateJob: {
         company: "",
         position: "",
         industry: "",
+        status: "",
       },
       /* 工作的种类 */
       jobOptions: [],
       jobRules: {
         company: [
-          { required: true, message: '请填写公司名称（常用名或营业执照名称）', trigger: 'blur' },
-          { min: 2, max: 30, message: '公司名称长度为 2-30 个字符', trigger: 'blur' }
+          {
+            required: true,
+            message: "请填写公司名称（常用名或营业执照名称）",
+            trigger: "blur",
+          },
+          {
+            min: 2,
+            max: 30,
+            message: "公司名称长度为 2-30 个字符",
+            trigger: "blur",
+          },
         ],
         position: [
-          { required: true, message: '请填写职位名称', trigger: 'blur' },
-          { min: 2, max: 30, message: '职位名称长度为 2- 30 个字符', trigger: 'blur' }
-        ]
-      }
+          { required: true, message: "请填写职位名称", trigger: "blur" },
+          {
+            min: 2,
+            max: 30,
+            message: "职位名称长度为 2- 30 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
     };
+  },
+  computed: {
+    jobVal() {
+      for (let i = 0; i < this.jobOptions.length; ++i) {
+        if (this.jobForm.industry === this.jobOptions[i].id) {
+          return this.jobOptions[i].name;
+        }
+      }
+    }
   },
   methods: {
     /* 编辑按钮 */
-    edit () {
+    edit() {
       this.isEdit = true;
     },
     /* 取消编辑 */
-    cancelEdit () {
+    cancelEdit() {
       this.isEdit = false;
+    },
+    /* 更新工作信息 */
+    update(formName) {
+      profileService.updateJobInfo({
+        company: this.jobForm.company,
+        position: this.jobForm.position,
+        industry: this.jobForm.industry
+      }).then(res => {
+        console.log("修改工作信息：" + res);
+        let data = res.data;
+        if (data.code == 200) {
+          //回显显示框和编辑框的数据
+          this.jobForm = data.data;
+          this.updateJob = data.data;
+          //隐藏编辑框，只显示显示框
+          this.isEdit = false;
+          this.$message({
+                message: "工作信息修改成功",
+              });
+        } else {
+          this.$message("error", data.msg || "接口异常");
+        }
+      }).catch(error => {
+        if (error.data) {
+          this.$message.error(error.data.msg);
+        }
+      })
+    },
+    /* 获取工作信息 */
+    getJobInfo() {
+      profileService.getJobInfo(getUser().name).then((res) => {
+        let data = res.data;
+        if (data.code == 200) {
+          this.jobForm = data.data;
+          this.updateJob = data.data;
+          if (this.jobForm.industry === 0 || this.jobForm.industry === null) {
+            this.jobForm.industry = "";
+          }
+        }
+      });
+    },
+    /* 获取行业信息 */
+    getJobList() {
+      profileService.getJobList().then(res => {
+        let data = res.data;
+        if (data.code == 200) {
+          this.jobOptions = data.data;
+        }
+      })
     }
-  }
+  },
+  mounted() {
+    this.getJobList();
+    this.getJobInfo();
+  },
 };
 </script>
 
@@ -246,6 +326,9 @@ export default {
 .content-text {
   color: #999aaa;
   height: 24px;
+}
+.has-val {
+  color: #222226;
 }
 /* 用户工作信息的编辑框样式开始 */
 .edit-content {

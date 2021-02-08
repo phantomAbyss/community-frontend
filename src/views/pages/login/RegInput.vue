@@ -195,6 +195,7 @@ export default {
                 message: res.data.message,
                 type: "success",
               });
+              /* 注册成功后应该自动登录，然后跳转到首页或者跳转到登录页后进行登录操作 */
             } else {
               this.$message({
                 message: res.data.message,

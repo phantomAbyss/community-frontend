@@ -57,11 +57,12 @@
       <!-- 导航栏的头像 -->
       <div class="avatar">
         <a href="#">
-          <img class="user-avatar" src="@/assets/img/avatar.jpg" />
+          <!-- <img class="user-avatar" src="@/assets/img/avatar.jpg" /> -->
+          <img class="user-avatar" :src="userInfo.avatar" />
         </a>
       </div>
       <!-- 鼠标滑过后显示 -->
-      <nav-user :name="userInfo.name"></nav-user>
+      <nav-user :name="userInfo.name" :avatar="userInfo.avatar"></nav-user>
     </li>
     <!-- 当用户没有登录的时候，不显示消息和个人中心，而是显示一个登录按钮 -->
     <li class="menu-item" v-else>

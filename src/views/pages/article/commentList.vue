@@ -6,7 +6,7 @@
           <h1><i class="el-icon-s-promotion" style="color: #7171fc"></i>
             4条回帖</h1>
           <!-- 回帖的排序方式 -->
-          <div class="comment-list-sort">回帖的排序方式选择</div>
+          <!-- <div class="comment-list-sort">回帖的排序方式选择</div> -->
           <div class="comment-reply float-right">
             <el-button type="primary" icon="el-icon-edit">回帖</el-button>
           </div>
@@ -34,9 +34,9 @@
                   <!-- 回帖时间、设备、以及回复、赞 -->
                   <div class="comment-eq">
                     <span class="comment-item-time">发表于 昨天 19:49:42</span>
-                    <span
+                    <!-- <span
                       >来自<a href="#" class="link-green">iOS客户端</a></span
-                    >
+                    > -->
                     <a href="javascript:void(0);" @click="openReply">回复(1)</a>
                     <a href="#">赞(0)</a>
                     <a href="#">分享</a>

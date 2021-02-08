@@ -1,62 +1,85 @@
 <template>
-    <!-- 头像部分信息 -->
-    <div class="user-info">
-        <!-- 头像主要内容部分开始 -->
-      <div class="user-info-main">
-        <div class="user-info-avatar">
-          <img src="@/assets/img/avatar.jpg" alt="用户头像" />
-          <div class="avatar-hover">
-            <img src="@/assets/img/logo.png" alt="" />
-          </div>
-        </div>
-        <div class="user-info-content">
-          <div class="user-info-username">
-            <div class="username">phantom</div>
-            <div
-              class="web-age"
-              style="
-                background-color: rgb(209, 221, 241);
-                color: rgb(69, 81, 101);
-              "
-            >
-              <img
-                src="https://img-home.csdnimg.cn/images/20210108035944.gif"
-                alt=""
-              />
-              <span>户龄3年</span>
-            </div>
-          </div>
-          <div class="user-info-vip no-vip">
-            此处为VIP功能，后期如果不做则删除
-          </div>
+  <!-- 头像部分信息 -->
+  <div class="user-info">
+    <!-- 头像主要内容部分开始 -->
+    <div class="user-info-main">
+      <div class="user-info-avatar">
+        <img
+          :src="generalInfo.avatar || require('@/assets/img/avatar.jpg')"
+          alt="用户头像"
+        />
+        <div class="avatar-hover"  @click="uploadAvatar">
+          <img src="@/assets/img/logo.png" alt="" />
         </div>
       </div>
-      <!-- 头像主要内容部分结束 -->
-      <!-- 个人主页部分开始 -->
-      <div class="user-info-other">
-        <div class="coin">此处为网站的币，如果不做则删除</div>
-        <i class="user-info-split"></i>
-        <div class="user-btn">
-          <a href="#" target="_blank">
-            个人主页
-            <i class="el-icon-arrow-right"></i>
-          </a>
+      <div class="user-info-content">
+        <div class="user-info-username">
+          <div class="username">{{ nickName }}</div>
+          <div
+            class="web-age"
+            style="
+              background-color: rgb(209, 221, 241);
+              color: rgb(69, 81, 101);
+            "
+          >
+            <img
+              src="https://img-home.csdnimg.cn/images/20210108035944.gif"
+              alt=""
+            />
+            <span>户龄{{ generalInfo.codeAge }}年</span>
+          </div>
         </div>
-        <i class="user-info-split"></i>
+        <!-- <div class="user-info-vip no-vip">
+            此处为VIP功能，后期如果不做则删除
+          </div> -->
+      </div>
+      <!-- 头像上传框 -->
+    <div v-if="uploadAvatarDialog">
+      <upload-avatar v-model="uploadAvatarDialog"></upload-avatar>
+    </div>
+    </div>
+    <!-- 头像主要内容部分结束 -->
+    <!-- 个人主页部分开始 -->
+    <div class="user-info-other">
+      <!-- <div class="coin">此处为网站的币，如果不做则删除</div>
+        <i class="user-info-split"></i> -->
+      <div class="user-btn">
+        <a href="#" target="_blank">
+          个人主页{{uploadAvatarDialog}}
+          <i class="el-icon-arrow-right"></i>
+        </a>
+      </div>
+      <!-- <i class="user-info-split"></i>
         <div class="user-btn user-medal">
           我的勋章
           <i class="el-icon-arrow-right"></i>
-        </div>
-      </div>
-      <!-- 个人主页部分结束 -->
+        </div> -->
     </div>
-    <!-- 基础信息 -->
+    <!-- 个人主页部分结束 -->
+  </div>
+  <!-- 基础信息 -->
 </template>
 
 <script>
+import uploadAvatar from '@/components/upload/uploadAvatar'
+
 export default {
-  name: 'userAvatar'
-}
+  name: "userAvatar",
+  props: ["generalInfo", "nickName", "userName"],
+  components: {
+    uploadAvatar
+  },
+  data () {
+    return {
+      uploadAvatarDialog: false
+    }
+  },
+  methods: {
+    uploadAvatar () {
+      this.uploadAvatarDialog = true;
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -113,6 +136,9 @@ export default {
 .avatar-hover img {
   width: 32px;
   height: 32px;
+}
+.user-info-avatar:hover .avatar-hover {
+  display: flex;
 }
 .user-info-content {
   display: -webkit-box;
