@@ -14,8 +14,12 @@ import './plugins/element.js'
 /* 引入全局样式 */
 import '@/assets/css/global.css';
 
+/* 引入全局的配置文件 */
+import Community from '@/common/utils/config.js'
+
 Vue.use(ViewUI);
 Vue.use(ElementUI);
+Vue.prototype.Community = Community;
 
 Vue.config.productionTip = false
 

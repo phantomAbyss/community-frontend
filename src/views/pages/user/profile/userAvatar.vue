@@ -8,7 +8,7 @@
           :src="generalInfo.avatar || require('@/assets/img/avatar.jpg')"
           alt="用户头像"
         />
-        <div class="avatar-hover"  @click="uploadAvatar">
+        <div class="avatar-hover" @click="uploadAvatar">
           <img src="@/assets/img/logo.png" alt="" />
         </div>
       </div>
@@ -34,9 +34,28 @@
           </div> -->
       </div>
       <!-- 头像上传框 -->
-    <div v-if="uploadAvatarDialog">
-      <upload-avatar v-model="uploadAvatarDialog"></upload-avatar>
-    </div>
+      <div v-if="uploadAvatarDialog">
+        <upload-avatar
+          field="avatar_file"
+          v-model="uploadAvatarDialog"
+          @crop-success="cropSuccess"
+          @crop-upload-success="cropUploadSuccess"
+          @crop-upload-fail="cropUploadFail"
+          :uploadUrl="uploadAvatarUrl"
+          :params="params"
+          :headers="headers"
+          :maxSize="2048"
+        ></upload-avatar>
+        <!-- <my-upload field="avatar_file" 
+      @crop-success="cropSuccess" 
+      @crop-upload-success="cropUploadSuccess" 
+      @crop-upload-fail="cropUploadFail" 
+      v-model="uploadAvatarDialogVisible" 
+      :width="150" :height="150" 
+      :url="urlParam" :params="params" :headers="headers" 
+      img-format="png" :noSquare="true" :maxSize="2048">
+      </my-upload> -->
+      </div>
     </div>
     <!-- 头像主要内容部分结束 -->
     <!-- 个人主页部分开始 -->
@@ -45,7 +64,7 @@
         <i class="user-info-split"></i> -->
       <div class="user-btn">
         <a href="#" target="_blank">
-          个人主页{{uploadAvatarDialog}}
+          个人主页
           <i class="el-icon-arrow-right"></i>
         </a>
       </div>
@@ -61,24 +80,56 @@
 </template>
 
 <script>
-import uploadAvatar from '@/components/upload/uploadAvatar'
+import uploadAvatar from "@/components/upload/uploadAvatar";
 
 export default {
   name: "userAvatar",
   props: ["generalInfo", "nickName", "userName"],
   components: {
-    uploadAvatar
+    uploadAvatar,
   },
-  data () {
+  data() {
     return {
-      uploadAvatarDialog: false
-    }
+      /* 头像上传框是否显示 */
+      uploadAvatarDialog: false,
+      /* 头像上传路径 */
+      uploadAvatarUrl: this.Community.API_PROFILE_URL + '/api/profile/upload/avatar',
+      params: {
+        a: ''
+      },
+      headers: {
+        Accept: 'application/json, text/javascript, */*; q=0.01'
+      }
+    };
   },
   methods: {
-    uploadAvatar () {
+    uploadAvatar() {
       this.uploadAvatarDialog = true;
-    }
-  }
+    },
+    cropSuccess(data, field, key) {
+			/* if (field == 'avatar1') {
+				this.avatarUrl1 = data;
+			} else if(field == 'avatar2') {
+				this.avatarUrl2 = data;
+			} else {
+				this.avatarUrl3 = data;
+			} */
+			console.log('-------- 剪裁成功 --------');
+		},
+		cropUploadSuccess(json, field, key) {
+			console.log('-------- 上传成功 --------');
+			console.log(json);
+			console.log('field: ' + field);
+			console.log('key: ' + key);
+      this.$emit('update:generalInfo', Object.assign({}, this.generalInfo, {avatar: json.data.url}))
+		},
+		cropUploadFail(status, field, key) {
+			console.log('-------- 上传失败 --------');
+			console.log("status:" + status);
+			console.log('field: ' + field);
+			console.log('key: ' + key);
+		}
+  },
 };
 </script>
 
