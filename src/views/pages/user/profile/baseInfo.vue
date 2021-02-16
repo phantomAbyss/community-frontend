@@ -389,7 +389,6 @@ export default {
 <style lang="less" scoped>
 /* 基础信息内容样式开始 */
 .base-info {
-  width: 998px;
   padding: 24px 16px 16px;
   background: #fff;
   margin-bottom: 16px;
@@ -475,7 +474,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     .el-form-item {
-      width: 419px;
+      width: 200px;
       margin-right: 0;
       margin-bottom: 24px;
       /deep/ .el-form-item__label {
@@ -495,7 +494,7 @@ export default {
       /deep/ .el-form-item__content {
         display: flex;
         .el-input {
-          width: 419px;
+          width: 200px;
         }
         .edit-nickname-info {
           margin-left: 48px;

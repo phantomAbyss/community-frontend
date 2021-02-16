@@ -2,7 +2,7 @@
   <!-- 用户的个人信息页面开始 -->
   <div class="user-main">
     <!-- 左部侧边栏开始 -->
-    <div class="main-left">
+    <div class="main-left left-fixed">
       <ul>
         <router-link tag="li" to="/user/profile">
           <a 
@@ -35,7 +35,6 @@
 <script>
 export default {
   name: "user",
-  
 };
 </script>
 
@@ -56,6 +55,10 @@ export default {
   top: 0;
   float: left;
   background: #fff;
+}
+.user-main .left-fixed {
+  position: fixed;
+  top: 80px;
 }
 .main-left ul {
   width: 100%;
@@ -82,7 +85,7 @@ export default {
 /* 左部侧边栏样式结束 */
 /* 右部内容栏样式开始 */
 .user-main .main-right {
-  min-width: 998px;
+  min-width: 500px;
   margin-left: 202px;
   min-height: 800px;
 }

@@ -55,8 +55,6 @@
                 ></el-input>
               </el-form-item>
             </div>
-          </el-row>
-          <el-row class="form-edu-row">
             <div>
               <span class="form-item-title">所属行业</span>
               <el-select v-model="updateJob.industry" placeholder="请选择">
@@ -69,6 +67,19 @@
               </el-select>
             </div>
           </el-row>
+          <!-- <el-row class="form-edu-row">
+            <div>
+              <span class="form-item-title">所属行业</span>
+              <el-select v-model="updateJob.industry" placeholder="请选择">
+                <el-option
+                  v-for="item in jobOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </div>
+          </el-row> -->
           <el-row class="form-footer">
             <el-button
               round
@@ -223,7 +234,6 @@ export default {
 /* 用户的工作信息样式开始 */
 .job-info {
   background: #fff;
-  width: 998px;
   padding: 0 16px 16px;
   margin-bottom: 16px;
 }
@@ -333,20 +343,18 @@ export default {
 /* 用户工作信息的编辑框样式开始 */
 .edit-content {
   background: #f8f8f8;
-  height: 256px;
-  width: 100%;
   padding: 24px 40px;
   position: relative;
   .el-form {
     .el-input {
-      width: 419px;
+      width: 200px;
       height: 40px;
     }
     /deep/ .el-select {
-      width: 419px;
+      width: 200px;
       height: 40px;
       .el-input {
-        width: 419px;
+        width: 200px;
         height: 40px;
       }
     }
@@ -364,13 +372,13 @@ export default {
         }
       }
     }
-    .form-edu-row {
+    /* .form-edu-row {
       display: flex;
       div {
         display: flex;
         flex-direction: column;
       }
-    }
+    } */
     .form-item-title {
       color: #555666;
       font-weight: 400;

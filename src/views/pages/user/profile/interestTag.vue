@@ -173,7 +173,6 @@ export default {
 <style lang="less" scoped>
 /* 用户的兴趣信息开始 */
 .interest-tag {
-  width: 998px;
   padding: 24px 16px 16px;
   background: #fff;
   margin-bottom: 32px;

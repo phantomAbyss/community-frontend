@@ -3,7 +3,7 @@
   <div class="account-main">
     <span class="account-main-title fill-bg">账号设置</span>
     <ul>
-      <li class="account-item" v-if="flag">
+      <li class="account-item">
         <span>
           <span>密</span>
           <span>码</span>
@@ -12,62 +12,14 @@
           <span class="account-warning" v-if="!securityInfo.password.hasInfo"
             >存在风险请设置密码</span
           >
-          <a href="javacript:void(0);" @click="change"
+          <a href="javascript:void(0);" @click="openPasswordDialog"
             >{{ securityInfo.password.hasInfo ? "修改" : "设置" }}密码</a
           >
         </p>
-      </li>
-      <li class="account-item password-edit" v-if="!flag">
-        <el-form
-          :model="updatePassword"
-          :rules="rules"
-          ref="updateForm"
-          hide-required-asterisk
-          label-position="top"
-          class="edit-password"
-        >
-          <el-form-item prop="oldPassword">
-            <el-input
-              type="password"
-              placeholder="请输入原密码"
-              v-model="updatePassword.oldPassword"
-              autocomplete="off"
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="newPassword">
-            <el-input
-              type="password"
-              placeholder="请输入新密码(8到16位)"
-              v-model="updatePassword.newPassword"
-              autocomplete="off"
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="confirmPassword">
-            <el-input
-              type="password"
-              placeholder="请再次输入新密码(8到16位)"
-              v-model="updatePassword.confirmPassword"
-              autocomplete="off"
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              round
-              size="small"
-              class="edit-btn-cancel"
-              @click="cancelEdit"
-              >取消</el-button
-            >
-            <el-button
-              round
-              type="primary"
-              size="small"
-              class="edit-btn-save"
-              @click="editJobList('updateForm')"
-              >保存</el-button
-            >
-          </el-form-item>
-        </el-form>
+        <!-- 密码修改编辑框 -->
+        <div v-if="uploadPasswordDialog">
+          <password v-model="uploadPasswordDialog"></password>
+        </div>
       </li>
       <li class="account-item">
         <span>
@@ -76,8 +28,12 @@
         </span>
         <p>
           <span>153****9549</span>
-          <a href="#" class>修改手机</a>
+          <a href="javascript:void(0);" @click="openMobileDialog">修改手机</a>
         </p>
+        <!-- 手机修改编辑框 -->
+        <div v-if="uploadMobileDialog">
+          <mobile v-model="uploadMobileDialog"></mobile>
+        </div>
       </li>
       <li class="account-item">
         <span>
@@ -86,22 +42,36 @@
         </span>
         <p>
           <span>11***@qq.com</span>
-          <a href="#" class>修改邮箱</a>
+          <a href="javascript:void(0);" @click="openEmailDialog">修改邮箱</a>
         </p>
+        <!-- 邮箱修改编辑框 -->
+        <div v-if="uploadEmailDialog">
+          <email v-model="uploadEmailDialog"></email>
+        </div>
       </li>
       <li class="account-item">
         <span>三方账号</span>
         <p>
-          <span></span>
-          <a href="#" class>立即设置</a>
+          <span class="blinded-icon" v-html="item" v-for="(item, index) in blindedIcon" :key="index">
+            {{item}}
+          </span>
+          <a href="javascript:void(0);" @click="openBlindDialog">立即设置</a>
         </p>
+        <!-- 三方绑定设置修改编辑框 -->
+        <div v-if="uploadBlindDialog">
+          <blind v-model="uploadBlindDialog"></blind>
+        </div>
       </li>
       <li class="account-item">
-        <span>登录记录</span>
+        <span>登录日志</span>
         <p>
           <span></span>
-          <a href="#" class>查看记录</a>
+          <a href="javascript:void(0);" @click="openLogDialog">查看记录</a>
         </p>
+        <!-- 登录日志查看对话框 -->
+        <div v-if="logViewDialog">
+          <log v-model="logViewDialog"></log>
+        </div>
       </li>
     </ul>
   </div>
@@ -109,23 +79,77 @@
 </template>
 
 <script>
+import password from './setting/password';
+import mobile from './setting/mobile';
+import email from './setting/email';
+import blind from './setting/blind';
+import log from './setting/log';
+
+import accountApi from "@/common/service/user/account";
+
 export default {
+  components: { password, mobile, email, blind, log },
   name: "accountSetting",
   props: ["securityInfo"],
   data() {
     return {
-      flag: true,
+      /* 是否打开密码修改编辑框 */
+      uploadPasswordDialog: false,
+      /* 是否打开手机修改编辑框 */
+      uploadMobileDialog: false,
+      /* 是否打开邮箱修改编辑框 */
+      uploadEmailDialog: false,
+      /* 是否打开三方账号修改编辑框 */
+      uploadBlindDialog: false,
+      /* 是否打开登录日志查看框 */
+      logViewDialog: false,
+      /* 密码更新的数据对象 */
       updatePassword: {
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
       },
+      blindedIcon: [],
       rules: {}
     };
   },
+  created () {
+    this.getBlindList(1);
+  },
   methods: {
-    change() {
-      this.flag = false;
+    /* 获取已经绑定的账号类型 */
+    getBlindList(type) {
+      accountApi.getBlindListByType(type).then(res => {
+        if (res.code === 200) {
+          this.blindedIcon = res.data || [];
+        } else {
+          this.$message({
+            message: res.message || "数据获取失败",
+            type: 'error',
+            center: true
+          });
+        }
+      })
+    },
+    /* 打开密码编辑框 */
+    openPasswordDialog() {
+      this.uploadPasswordDialog = true;
+    },
+    /* 打开手机编辑框 */
+    openMobileDialog() {
+      this.uploadMobileDialog = true;
+    },
+    /* 打开邮箱编辑框 */
+    openEmailDialog() {
+      this.uploadEmailDialog = true;
+    },
+    /* 打开三方绑定编辑框 */
+    openBlindDialog() {
+      this.uploadBlindDialog = true;
+    },
+    /* 打开登录日志查看框 */
+    openLogDialog() {
+      this.logViewDialog = true;
     },
     /* 取消编辑 */
     cancelEdit () {
@@ -179,6 +203,9 @@ export default {
   text-align: right;
   width: calc(100% - 72px);
   color: #222226;
+}
+.account-item .blinded-icon {
+  margin-left: 10px;
 }
 .account-item > p a {
   display: inline-block;

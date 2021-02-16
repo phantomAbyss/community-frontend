@@ -80,7 +80,7 @@ export default {
 <style lang="less" scoped>
 /* 用户的账户设置样式开始 */
 .user-account {
-  width: 998px;
+  width: 800px;
 }
 /* 用户的账户设置样式结束 */
 </style>

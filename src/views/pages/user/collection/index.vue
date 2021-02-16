@@ -24,7 +24,7 @@ export default {
 <style lang="less" scoped>
 /* 用户的收藏样式开始 */
 .user-collection {
-  width: 998px;
+  width: 800px;
   background: #fff;
 }
 /* 用户的收藏样式结束 */

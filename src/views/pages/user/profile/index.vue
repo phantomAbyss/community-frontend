@@ -27,5 +27,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.user-profile {
+  width: 800px;
+}
 </style>

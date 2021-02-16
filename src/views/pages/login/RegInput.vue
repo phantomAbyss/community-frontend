@@ -78,6 +78,7 @@
 
 <script>
 import userApi from "@/common/service/user/index";
+import commonApi from "@/common/service/common";
 export default {
   name: "RegInput",
   data() {
@@ -168,7 +169,7 @@ export default {
   methods: {
     /* 获取验证码 */
     getCheckCode() {
-      userApi.sendCheckCode(this.registerForm.phonenum).then((response) => {
+      commonApi.sendCheckCodeByMobile(this.registerForm.phonenum).then((response) => {
         this.codeVal = "验证码已发送";
         this.$message({
           message: response.data.message,
@@ -189,16 +190,16 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           //表单校验通过,发送注册请求
-          userApi.register(this.verifyCode, this.registerForm).then((res) => {
-            if (res.data.flag) {
+          userApi.register(this.verifyCode, this.registerForm).then((data) => {
+            if (data.flag) {
               this.$message({
-                message: res.data.message,
+                message: data.message,
                 type: "success",
               });
               /* 注册成功后应该自动登录，然后跳转到首页或者跳转到登录页后进行登录操作 */
             } else {
               this.$message({
-                message: res.data.message,
+                message: data.message,
                 type: "error",
               });
               return false;
@@ -213,6 +214,9 @@ export default {
         }
       });
     },
+  },
+  created() {
+    this.registerForm.phoneprefix = this.options[1].value;
   },
 };
 </script>

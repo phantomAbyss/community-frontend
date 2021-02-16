@@ -106,17 +106,18 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           userApi.login(this.loginForm).then(res => {
-            if (res.data.flag) {
+            console.log(res)
+            if (res.code === 200) {
               /* 登录成功后，将用户信息存储到Cookie中，然后页面跳转 */
-              let token = res.data.data.token;
-              let name = res.data.data.name;
-              let avatar = res.data.data.avatar;
+              let token = res.data.token;
+              let name = res.data.name;
+              let avatar = res.data.avatar;
               setUser(token, name, avatar);
               //跳转到首页
               location.href = "/";
               /* 提示信息 */
               this.$message({
-                message: res.data.data.name,
+                message: res.data.name,
                 type: "success",
               });
             } else {
@@ -140,10 +141,7 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-  },
-  created() {
-    this.registerForm.phoneprefix = this.options[1].value;
-  },
+  }
 };
 </script>
 

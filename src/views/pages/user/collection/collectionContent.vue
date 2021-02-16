@@ -1,130 +1,133 @@
 <template>
-    <!-- 用户的收藏内容开始 -->
-    <div class="collection-content">
-      <div class="content-list">
-        <div class="content-title">
-          <div class="drag-tip">
-            <svg
-              t="1611631826148"
-              class="icon"
-              viewBox="0 0 1024 1024"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              p-id="6523"
-              width="22"
-              height="22"
-            >
-              <path
-                d="M440 937.2H132.8c-23.2 0-42-18.8-42-42V588c0-23.2 18.8-42 42-42H440c23.2 0 42 18.8 42 42v307.2c0 23.1-18.8 42-42 42z m-289.2-60H422V606H150.8v271.2z"
-                p-id="6524"
-                fill="#7171fc"
-              ></path>
-              <path
-                d="M213.4 575h60v30h-60zM866.8 811.4h-58.7v-60h58.7v60z m-117.4 0h-58.7v-60h58.7v60z m-117.5 0h-58.7v-60h58.7v60z m307.9-50.8h-60v-58.7h60v58.7z m0-117.5h-60v-58.7h60v58.7z m0-117.4h-60V467h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108.1h-60v-58.7h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108h-60v-58.7h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108.1h-60V127c0 6.3 3.3 12.2 8.7 15.4l31-51.4c12.6 7.6 20.4 21.4 20.4 36v46.3zM273.4 164h-60v-37c0-23.2 18.8-42 42-42h2.9v59.8c8.5-1.4 15.1-8.8 15.1-17.8v37z m572.2-19h-58.7V85h58.7v60z m-117.5 0h-58.7V85h58.7v60z m-117.4 0H552V85h58.7v60z m-117.5 0h-58.7V85h58.7v60z m-117.4 0h-58.7V85h58.7v60zM484.4 751.4h30v60h-30zM480.786 500.822l271.243-271.244 42.426 42.426-271.243 271.244z"
-                p-id="6525"
-                fill="#7171fc"
-              ></path>
-              <path
-                d="M821.5 404.7h-60V256.5H613.9v-60h207.6z"
-                p-id="6526"
-                fill="#7171fc"
-              ></path>
-            </svg>
-            <span>可拖拽博文至其他收藏夹进行分类修改</span>
-          </div>
-          <div class="collection-name">
-            <span class="dir-name">
-              默认收藏夹
-              <i class="el-icon-edit-outline"></i>
-            </span>
-            <div class="input-edit" style="display: none">
-              <el-input v-model="input" placeholder="请输入文件夹名称"
-                >默认收藏夹</el-input
-              >
-              <i class="el-icon-error"></i>
-              <i class="el-icon-success"></i>
-            </div>
-          </div>
-          <span class="edit-folder folder-detail">
-            <p class="folder-text folder-desc">
-              默认收藏夹的描述
-              <i class="el-icon-edit-outline"></i>
-            </p>
-            <p class="folder-edit">
-              <em class="cursor">删除收藏夹</em>
-              <em class="cursor">批量移动</em>
-              <em class="cursor"> 设为私密 </em>
-            </p>
-          </span>
+  <!-- 用户的收藏内容开始 -->
+  <div class="collection-content">
+    <div class="content-list">
+      <div class="content-title">
+        <div class="drag-tip">
+          <svg
+            t="1611631826148"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="6523"
+            width="22"
+            height="22"
+          >
+            <path
+              d="M440 937.2H132.8c-23.2 0-42-18.8-42-42V588c0-23.2 18.8-42 42-42H440c23.2 0 42 18.8 42 42v307.2c0 23.1-18.8 42-42 42z m-289.2-60H422V606H150.8v271.2z"
+              p-id="6524"
+              fill="#7171fc"
+            ></path>
+            <path
+              d="M213.4 575h60v30h-60zM866.8 811.4h-58.7v-60h58.7v60z m-117.4 0h-58.7v-60h58.7v60z m-117.5 0h-58.7v-60h58.7v60z m307.9-50.8h-60v-58.7h60v58.7z m0-117.5h-60v-58.7h60v58.7z m0-117.4h-60V467h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108.1h-60v-58.7h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108h-60v-58.7h60v58.7z m-666.4-9.4h-60v-58.7h60v58.7z m666.4-108.1h-60V127c0 6.3 3.3 12.2 8.7 15.4l31-51.4c12.6 7.6 20.4 21.4 20.4 36v46.3zM273.4 164h-60v-37c0-23.2 18.8-42 42-42h2.9v59.8c8.5-1.4 15.1-8.8 15.1-17.8v37z m572.2-19h-58.7V85h58.7v60z m-117.5 0h-58.7V85h58.7v60z m-117.4 0H552V85h58.7v60z m-117.5 0h-58.7V85h58.7v60z m-117.4 0h-58.7V85h58.7v60zM484.4 751.4h30v60h-30zM480.786 500.822l271.243-271.244 42.426 42.426-271.243 271.244z"
+              p-id="6525"
+              fill="#7171fc"
+            ></path>
+            <path
+              d="M821.5 404.7h-60V256.5H613.9v-60h207.6z"
+              p-id="6526"
+              fill="#7171fc"
+            ></path>
+          </svg>
+          <span>可拖拽博文至其他收藏夹进行分类修改</span>
         </div>
-        <ul class="content-tab">
-          <li class="tab-active">全部</li>
-          <li class>博客</li>
-          <li class>下载</li>
-        </ul>
-        <ul class="content-sublist">
-          <li>
-            <div class="content-item">
-              <span class="item-dir">
-                <span class="item-subtitle"> 这是收藏的文章的名字 </span>
-              </span>
-              <div class="item-right">
-                <a href="#" class="like-cancel">
-                  <i class="el-icon-star-on"></i>
-                </a>
-              </div>
+        <div class="collection-name">
+          <span class="dir-name">
+            默认收藏夹
+            <i class="el-icon-edit-outline"></i>
+          </span>
+          <div class="input-edit" style="display: none">
+            <el-input v-model="input" placeholder="请输入文件夹名称"
+              >默认收藏夹</el-input
+            >
+            <i class="el-icon-error"></i>
+            <i class="el-icon-success"></i>
+          </div>
+        </div>
+        <span class="edit-folder folder-detail">
+          <p class="folder-text folder-desc">
+            默认收藏夹的描述
+            <i class="el-icon-edit-outline"></i>
+          </p>
+          <p class="folder-edit">
+            <em class="cursor">删除收藏夹</em>
+            <em class="cursor">批量移动</em>
+            <em class="cursor"> 设为私密 </em>
+          </p>
+        </span>
+      </div>
+      <ul class="content-tab">
+        <li class="tab-active">全部</li>
+        <li class>博客</li>
+        <li class>下载</li>
+      </ul>
+      <ul class="content-sublist">
+        <li>
+          <div class="content-item">
+            <span class="item-dir">
+              <span class="item-subtitle"> 这是收藏的文章的名字 </span>
+            </span>
+            <div class="item-right">
+              <a href="#" class="like-cancel">
+                <i class="el-icon-star-on"></i>
+              </a>
             </div>
-          </li>
-          <li>
-            <div class="content-item">
-              <span class="item-dir">
-                <span class="item-subtitle"> 这是收藏的文章的名字 </span>
-              </span>
-              <div class="item-right">
-                <a href="#" class="like-cancel">
-                  <i class="el-icon-star-on"></i>
-                </a>
-              </div>
+          </div>
+        </li>
+        <li>
+          <div class="content-item">
+            <span class="item-dir">
+              <span class="item-subtitle"> 这是收藏的文章的名字 </span>
+            </span>
+            <div class="item-right">
+              <a href="#" class="like-cancel">
+                <i class="el-icon-star-on"></i>
+              </a>
             </div>
-          </li>
-          <li>
-            <div class="content-item">
-              <span class="item-dir">
-                <span class="item-subtitle"> 这是收藏的文章的名字 </span>
-              </span>
-              <div class="item-right">
-                <a href="#" class="like-cancel">
-                  <i class="el-icon-star-on"></i>
-                </a>
-              </div>
+          </div>
+        </li>
+        <li>
+          <div class="content-item">
+            <span class="item-dir">
+              <span class="item-subtitle"> 这是收藏的文章的名字 </span>
+            </span>
+            <div class="item-right">
+              <a href="#" class="like-cancel">
+                <i class="el-icon-star-on"></i>
+              </a>
             </div>
-          </li>
-          <li>
-            <div class="content-item">
-              <span class="item-dir">
-                <span class="item-subtitle"> 这是收藏的文章的名字 </span>
-              </span>
-              <div class="item-right">
-                <a href="#" class="like-cancel">
-                  <i class="el-icon-star-on"></i>
-                </a>
-              </div>
+          </div>
+        </li>
+        <li>
+          <div class="content-item">
+            <span class="item-dir">
+              <span class="item-subtitle"> 这是收藏的文章的名字 </span>
+            </span>
+            <div class="item-right">
+              <a href="#" class="like-cancel">
+                <i class="el-icon-star-on"></i>
+              </a>
             </div>
-          </li>
-        </ul>
+          </div>
+        </li>
+      </ul>
+      <nav style="text-align: center">
+        <!-- nav标签是为了使分页插件居中 -->
         <div class="content-page">
-          <el-pagination background layout="prev, pager, next" :total="1000">
+          <el-pagination background layout="prev, pager, next" :total="10">
           </el-pagination>
         </div>
-      </div>
+      </nav>
     </div>
-    <!-- 用户的收藏内容结束 -->
+  </div>
+  <!-- 用户的收藏内容结束 -->
 </template>
 
 <script>
 export default {
-  name: 'collectionContent'
-}
+  name: "collectionContent",
+};
 </script>
 
 <style lang="less" scoped>
@@ -244,7 +247,7 @@ export default {
   float: right;
   width: 300px;
   text-align: right;
-  // margin-top: -30px;
+  margin-top: -30px;
 }
 .edit-folder em {
   color: #108ee9;
@@ -352,7 +355,6 @@ export default {
 .content-page {
   position: relative;
   top: 30px;
-  left: 200px;
 }
 /* 用户的收藏内容样式结束 */
 </style>

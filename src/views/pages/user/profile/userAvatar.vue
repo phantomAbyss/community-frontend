@@ -137,6 +137,7 @@ export default {
 /* 用户头部部分信息样式开始 */
 /* 头部内容样式开始 */
 .user-info {
+  position: relative;
   margin-bottom: 16px;
   background: #fff;
 }
