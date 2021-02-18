@@ -311,7 +311,7 @@ export default {
   padding: 0 24px;
   background: #fff;
   display: inline-block;
-  width: 100%;
+  width: 90%;
   font-size: 14px !important;
   line-height: 52px;
 }

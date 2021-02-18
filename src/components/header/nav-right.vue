@@ -30,8 +30,9 @@
     </li>
     <!-- 消息 -->
     <li class="menu-item" v-if="userInfo.name !== undefined">
-      <Badge :count="20" :offset="[15, 1]">
-        <a href="#" class="message-box">
+      <!-- <Badge :count="20" :offset="[15, 1]"> -->
+      <el-badge :value="12" :max="99" class="message-count">
+        <a href="/msg/system/notice" class="message-box">
           <svg
             t="1611044606256"
             class="icon"
@@ -49,7 +50,8 @@
             ></path>
           </svg>
         </a>
-      </Badge>
+        <!-- </Badge> -->
+      </el-badge>
       <!-- <a href="#">消息</a> -->
     </li>
     <!-- 个人中心 -->
@@ -76,7 +78,7 @@
 
 <script>
 import navUser from "@/components/header/nav-user";
-import { getUser } from '@/common/utils/auth'
+import { getUser } from "@/common/utils/auth";
 export default {
   name: "nav-right",
   components: {
@@ -85,14 +87,13 @@ export default {
   data() {
     return {
       /* 用户信息 */
-      userInfo: {}
+      userInfo: {},
     };
   },
-  created () {
+  created() {
     this.userInfo = getUser();
   },
-  methods: {
-  }
+  methods: {},
 };
 </script>
 
@@ -151,10 +152,16 @@ svg {
 }
 /* 搜索框样式结束 */
 /* 消息按钮样式开始 */
-.message-box {
-  padding: 10px 10px;
-  font-size: 20px;
-  display: inline-block;
+.message-count {
+  .message-box {
+    padding: 10px 10px;
+    font-size: 20px;
+    display: inline-block;
+  }
+  /deep/ sup {
+    top: 15px;
+    right: 20px;
+  }
 }
 /* 消息按钮样式结束 */
 /* 用户头像部分样式开始 */

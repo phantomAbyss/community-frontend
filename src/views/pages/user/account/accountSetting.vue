@@ -163,7 +163,7 @@ export default {
 /* 账户设置的内容样式开始 */
 .account-main {
   width: 100%;
-  padding: 24px 16px 0;
+  padding: 24px 0;
   min-height: 200px;
   background: #fff;
   font-size: 14px;
@@ -175,14 +175,15 @@ export default {
   font-weight: 600;
   color: #2e2e2e;
   line-height: 24px;
+  margin-left: 20px;
 }
 .account-main .account-item {
-  padding: 32px 0 30px;
+  width: 85%;
+  margin-left: 40px;
+  padding: 20px 0 30px;
   // margin-bottom: 20px;
   color: #555666;
-}
-.account-main .account-item + .account-item {
-  border-top: 1px solid #e0dbdb;
+  border-bottom: 1px solid #e0dbdb;
 }
 .account-item > span {
   float: left;
@@ -203,8 +204,12 @@ export default {
   text-align: right;
   width: calc(100% - 72px);
   color: #222226;
+  margin-top: -20px;
+  margin-right: 10px;
 }
 .account-item .blinded-icon {
+  position: relative;
+  top: 2px;
   margin-left: 10px;
 }
 .account-item > p a {

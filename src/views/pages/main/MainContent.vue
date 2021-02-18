@@ -167,9 +167,13 @@ export default {
 /* 首页的内容部分样式开始 */
 .content {
   float: left;
-  width: 690px;
   margin: 0 10px 0 0;
   overflow: auto;
+  position: relative;
+  width: 690px;
+  min-width: 690px;
+  min-height: 800px;
+  background: transparent;
 }
 /* 内容展示样式开始 */
 .main-content {

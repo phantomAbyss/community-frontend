@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: 'collectionContent'
+  name: 'collectionHeader'
 }
 </script>
 
@@ -73,7 +73,6 @@ export default {
   font-family: PingFangSC-Medium, PingFang SC;
 }
 .sub-menu .item-new {
-  width: 200px;
   line-height: 35px;
   padding-top: 16px !important;
 }
