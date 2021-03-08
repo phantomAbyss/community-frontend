@@ -22,7 +22,13 @@ import like from '@/views/pages/message/system/like'
 import reply from '@/views/pages/message/system/reply'
 import follow from '@/views/pages/message/system/follow'
 
-import chat from '@/views/pages/message/chat'
+import chat from '@/views/pages/message/chat/index'
+
+/* 楼栋信息 */
+import building from '@/views/pages/message/building/index'
+
+/* 消息设置 */
+import msgSetting from '@/views/pages/message/setting/index'
 
 /* 测试链接 */
 import test from '@/views/test/index'
@@ -59,10 +65,18 @@ const routes = [
           }
         ]
       }, {
-        path: 'chat/:conversationId',
+        path: 'friend',
         name: 'chat',
         props: true,
         component: chat
+      }, {
+        path: 'building',
+        name: 'building',
+        component: building
+      }, {
+        path: 'setting',
+        name: 'setting',
+        component: msgSetting
       }
     ]
   }, {
@@ -70,7 +84,7 @@ const routes = [
     name: 'user',
     component: user,
     children: [
-      { path: 'profile', name: 'profile', component: profile },
+      { path: 'profile/:userId', props: true, name: 'profile', component: profile },
       {
         path: 'account', 
         name: 'account', 
@@ -84,8 +98,9 @@ const routes = [
       { path: 'collection', name: 'collection', component: collection }
     ]
   }, {
-    path: '/article',
+    path: '/article/:postId',
     name: 'article',
+    props: true,
     component: article
   }, {
     path: '/',

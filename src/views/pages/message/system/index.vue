@@ -121,15 +121,18 @@ export default {
 /* 系统通知全局样式开始 */
 .system-notice {
   height: 635px;
-  width: 725px;
+  width: 815px;
+  margin-left: 10px;
   overflow: hidden;
-  margin: 0;
   border: 1px solid #e0e0e0;
   border-radius: 3px;
   background: #fff;
   float: left;
   display: flex;
   flex-direction: column;
+  -webkit-box-shadow: 0 2px 4px 0 rgb(121 146 185 / 54%);
+  box-shadow: 0 2px 4px 0 rgb(121 146 185 / 54%);
+  border-radius: 4px;
   .menu-box {
     background: #fff;
     border-bottom: 2px solid #25bb9b;
@@ -147,7 +150,7 @@ export default {
         position: relative;
         font-weight: 400;
         // height: 40px;
-        padding: 9px 65px;
+        padding: 9px 76px;
         // width: 180px;
         text-align: center;
         border-right: 1px solid #7171fc;

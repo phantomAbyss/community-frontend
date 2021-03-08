@@ -8,6 +8,8 @@ export default {
             url: `/${group_name}/${api_name}/search/${page}/${size}`,
             method: 'post',
             data: searchMap
+        }).then(res => {
+            return res.data;
         })
     },
 }

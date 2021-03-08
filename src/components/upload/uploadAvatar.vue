@@ -116,7 +116,7 @@
     ></canvas>
     <!-- 对话框底部的按钮 -->
     <span slot="footer" class="dialog-footer">
-      <el-button v-if="step == 1" type="info" plain @click="offDialog">{{
+      <el-button v-if="step == 1" type="primary" plain @click="offDialog">{{
         lang.btn.off
       }}</el-button>
       <el-button v-if="step == 2" @click="setStep(1)">{{
@@ -395,8 +395,8 @@ export default {
         /* width: w + "px",
         height: h + "px", */
         //h = 180, w = 30
-        width: "240px",
-        height: "240px",
+        width: "180px",
+        height: "180px",
       };
     },
     previewStyle() {

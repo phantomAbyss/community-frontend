@@ -13,15 +13,18 @@
           <div class="tag-content-right">
             <ul class="followed-tag-list" v-if="followedTagList.length">
               <li v-for="followedTag in followedTagList" :key="followedTag.id">
-                <el-tag closable @close="unFollowTag(followedTag)">{{
-                  followedTag.name
-                }}</el-tag>
+                <el-tag
+                  :closable="isLoginUser()"
+                  effect="dark"
+                  @close="unFollowTag(followedTag)"
+                  >{{ followedTag.name }}</el-tag
+                >
               </li>
             </ul>
             <div class="no-data" v-else>您还没有添加兴趣标签</div>
           </div>
         </li>
-        <li>
+        <li v-if="isLoginUser()">
           <div class="tag-content-left">选择标签</div>
           <div class="tag-content-right">
             <ul class="tag-list">
@@ -54,26 +57,41 @@
 
 <script>
 import profileService from "@/common/service/user/profile";
+
+import { getUser } from "@/common/utils/auth";
+
 export default {
   name: "interestTag",
+  props: {
+    userId: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
+      userInfo: {},
       tagList: [],
       mainIndex: 0,
       subIndex: 0,
     };
   },
-  created () {
+  created() {
     this.getTagList();
+    this.userInfo = getUser();
   },
   methods: {
+    /* 判断是否为当前登录用户 */
+    isLoginUser() {
+      return this.userId === this.userInfo.userId;
+    },
+    /* 获取标签列表 */
     getTagList() {
-      /* 获取标签列表 */
-      profileService.getTagList().then(res => {
+      profileService.getTagList().then((res) => {
         if (res.code === 200) {
           this.tagList = res.data;
         }
-      })
+      });
     },
     /* 选择大标签 */
     chooseTag(index) {
@@ -87,39 +105,39 @@ export default {
       let data = {
         label: subTag.id,
         parentLabel: this.tagList[this.mainIndex].id,
-        followType: 1  //1表示关注成功
+        followType: 1, //1表示关注成功
       };
       //调用api执行关注
-      profileService.followTag(data).then(res => {
+      profileService.followTag(data).then((res) => {
         if (res.code === 200) {
           this.subIndex = subIndex;
           /* 关注某个小标签后修改tagList */
           this.changeTagListAfterFollow();
           this.$message({
-            message: '关注成功',
-            type: 'success'
-          })
+            message: "关注成功",
+            type: "success",
+          });
         }
-      })
+      });
     },
     //取关
     unFollowTag({ id, parentId }) {
       let data = {
         label: id,
         parentLabel: parentId,
-        followType: -1   //-1表示取消关注
+        followType: -1, //-1表示取消关注
       };
       // 调用api取消关注
-      profileService.followTag(data).then(res => {
+      profileService.followTag(data).then((res) => {
         if (res.code === 200) {
           /* 取关后修改标签集 */
           this.changeTagListAfterUnFollow(id, parentId);
           this.$message({
-            message: '取关成功',
-            type: 'success'
-          })
+            message: "取关成功",
+            type: "success",
+          });
         }
-      })
+      });
     },
     // 关注后修改TagList
     changeTagListAfterFollow() {
@@ -130,7 +148,7 @@ export default {
       console.log('pre = ' + preTagItem) */
       preTagItem.select = true;
       preTagItem.tags[this.subIndex].select = true;
-      console.log("关注后修改tagList")
+      console.log("关注后修改tagList");
       this.$set(this.tagList, this.mainIndex, preTagItem);
     },
     // 取消关注后修改TagList

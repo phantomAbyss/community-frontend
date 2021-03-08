@@ -68,6 +68,8 @@ export default {
         username: "",
         password: "",
       },
+      /* 这是服务器端登录通过后返回的用户信息 */
+      userInfo: {},
       rules: {
         /* 登录表单的自定义规则 */
         username: [
@@ -108,16 +110,16 @@ export default {
           userApi.login(this.loginForm).then(res => {
             console.log(res)
             if (res.code === 200) {
+              let data = res.data;
               /* 登录成功后，将用户信息存储到Cookie中，然后页面跳转 */
-              let token = res.data.token;
-              let name = res.data.name;
-              let avatar = res.data.avatar;
-              setUser(token, name, avatar);
+              let token = data.token;
+              this.userInfo = data.userInfo;
+              setUser(this.userInfo.userId, token, this.userInfo.username, this.userInfo.avatar);
               //跳转到首页
               location.href = "/";
               /* 提示信息 */
               this.$message({
-                message: res.data.name,
+                message: this.userInfo.username,
                 type: "success",
               });
             } else {

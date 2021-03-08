@@ -4,12 +4,17 @@
     <div class="base-info-head">基本信息</div>
     <div class="base-info-content">
       <!-- 基本信息的展示 -->
-      <div class="info-content" v-if="!isEdit" @click="edit">
+      <div
+        class="info-content"
+        :class="{'mine': isLoginUser()}"
+        v-if="!isEdit"
+        @click="edit"
+      >
         <!-- 用户的基础个人信息 -->
         <ul>
           <li>
             <div class="content-left">用户昵称</div>
-            <div class="content-right">{{ baseInfo.nickname }}</div>
+            <div class="content-right">{{ baseInfo.username }}</div>
           </li>
           <li>
             <div class="content-left">
@@ -17,7 +22,7 @@
               <span>户</span>
               <span>ID</span>
             </div>
-            <div class="content-right">{{ baseInfo.id }}</div>
+            <div class="content-right">{{ baseInfo.userId }}</div>
           </li>
           <li>
             <div class="content-left">真实姓名</div>
@@ -125,7 +130,7 @@
           </li>
         </ul>
         <!-- 用户基础个人信息编辑按钮 -->
-        <div class="edit-icon"><i class="el-icon-edit"></i>编辑</div>
+        <div class="edit-icon" v-if="isLoginUser()"><i class="el-icon-edit"></i>编辑</div>
       </div>
       <!-- 基本信息的修改界面 -->
       <div class="info-content-edit" v-else>
@@ -138,9 +143,9 @@
           label-position="top"
           class="info-content-edit-form"
         >
-          <el-form-item label="用户昵称" prop="nickname" class="edit-nickname">
+          <el-form-item label="用户昵称" prop="username" class="edit-nickname">
             <el-input
-              v-model="updatebaseInfo.nickname"
+              v-model="updatebaseInfo.username"
               placeholder="请输入昵称"
               :disabled="!!updatebaseInfo.modifyTime"
             ></el-input>
@@ -153,7 +158,7 @@
             </div>
           </el-form-item>
           <el-form-item label="用户ID" prop="userId">
-            <el-input v-model="updatebaseInfo.id" disabled></el-input>
+            <el-input v-model="updatebaseInfo.userId" disabled></el-input>
           </el-form-item>
           <el-form-item label="真实姓名" prop="realName">
             <el-input
@@ -237,7 +242,16 @@ import moment from "moment";
 
 export default {
   name: "baseInfo",
-  props: ["baseInfo"],
+  props: {
+    baseInfo: {
+      type: Object,
+      default: null,
+    },
+    userId: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
       //基本信息编辑框是否开启
@@ -245,7 +259,7 @@ export default {
       //基本框的编辑数据
       updatebaseInfo: {
         userId: "",
-        nickname: "",
+        username: "",
         realName: "",
         gender: 1,
         introduce: "",
@@ -256,7 +270,7 @@ export default {
         nameModify: true,
       },
       rules: {
-        nickname: [
+        username: [
           { required: true, message: "昵称不能为空", trigger: "blur" },
           {
             min: 2,
@@ -329,6 +343,12 @@ export default {
     };
   },
   methods: {
+    /* 验证是否为当前登录用户 */
+    isLoginUser() {
+      /* console.log(this.userId);
+      console.log(this.baseInfo.userId) */
+      return this.userId == this.baseInfo.userId;
+    },
     /* 提交修改的基础信息 */
     update() {
       this.$refs.updateForm.validate((valid) => {
@@ -343,15 +363,15 @@ export default {
           delete data.nameModify;
           /* 调用更新函数 */
           profileService.updateBaseInfo(data).then((res) => {
-            let data = res.data;
-            if (data.code === 200) {
-              this.$emit('update', data.data)
+            if (res.code === 200) {
+              let data = res.data;
+              this.$emit("update", data);
               this.isEdit = false;
               this.$message({
                 message: "基础信息修改成功",
               });
             } else {
-              this.$message.error(data.msg || "接口异常");
+              this.$message.error(res.msg || "接口异常");
             }
           });
         } else {
@@ -361,6 +381,9 @@ export default {
     },
     // 进入到编辑页面
     edit() {
+      if (!this.isLoginUser()) {
+        return;
+      }
       this.isEdit = true;
     },
     /* 取消编辑 */
@@ -401,7 +424,7 @@ export default {
   margin-bottom: 16px;
 }
 /* 基础信息内容显示样式开始 */
-.base-info-content .info-content:hover {
+.base-info-content .mine:hover {
   background: #f8f8f8;
 }
 .base-info-content .info-content {

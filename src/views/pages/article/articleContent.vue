@@ -2,9 +2,9 @@
   <!-- 文章主体内容开始 -->
   <div class="content">
       <!-- 文章内容 -->
-      <main-content></main-content>
+      <main-content :postId="postId"></main-content>
       <!-- 评论列表 -->
-      <comment-list></comment-list>
+      <comment-list :postId="postId"></comment-list>
       <!-- 回帖 -->
       <reply-post></reply-post>
   </div>
@@ -18,6 +18,12 @@ import replyPost from './replyPost'
 
 export default {
   name: "articleContent",
+  props: {
+    postId: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
       mainContent,
       commentList,

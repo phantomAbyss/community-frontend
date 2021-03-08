@@ -29,7 +29,7 @@
       </a>
     </li>
     <!-- 消息 -->
-    <li class="menu-item" v-if="userInfo.name !== undefined">
+    <li class="menu-item" v-if="userInfo.username !== undefined">
       <!-- <Badge :count="20" :offset="[15, 1]"> -->
       <el-badge :value="12" :max="99" class="message-count">
         <a href="/msg/system/notice" class="message-box">
@@ -55,7 +55,7 @@
       <!-- <a href="#">消息</a> -->
     </li>
     <!-- 个人中心 -->
-    <li class="menu-item user" v-if="userInfo.name !== undefined">
+    <li class="menu-item user" v-if="userInfo.username !== undefined">
       <!-- 导航栏的头像 -->
       <div class="avatar">
         <a href="#">
@@ -64,7 +64,7 @@
         </a>
       </div>
       <!-- 鼠标滑过后显示 -->
-      <nav-user :name="userInfo.name" :avatar="userInfo.avatar"></nav-user>
+      <nav-user :userInfo="userInfo"></nav-user>
     </li>
     <!-- 当用户没有登录的时候，不显示消息和个人中心，而是显示一个登录按钮 -->
     <li class="menu-item" v-else>

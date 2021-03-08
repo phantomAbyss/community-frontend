@@ -4,13 +4,13 @@
     <!-- 左部侧边栏开始 -->
     <div class="main-left left-fixed">
       <ul>
-        <router-link tag="li" to="/user/profile">
+        <router-link tag="li" :to="'/user/profile/' + userId">
           <a 
           href="javascript:;"
           class="">个人资料</a>
         </router-link>
         <!-- <li class="link-active"></li> -->
-        <router-link tag="li" to="/user/account">
+        <router-link tag="li" to="/user/account" v-if="userId == userInfo.userId">
           <a 
           href="javascript:void(0);"
           class="">账号设置</a>
@@ -18,7 +18,7 @@
         <router-link tag="li" to="/user/collection">
           <a 
           href="javascript:void(0);"
-          class="">我的收藏</a>
+          class="">{{ userId == userInfo.userId ? '我' : 'Ta' }}的收藏</a>
         </router-link>
       </ul>
     </div>
@@ -33,8 +33,22 @@
 </template>
 
 <script>
+import { getUser } from '@/common/utils/auth'
+
 export default {
   name: "user",
+  data () {
+    return {
+      /* 这是跳转到该页面的url包含的userId */
+      userId: '',
+      /* 这是当前登录用户的用户信息 */
+      userInfo: {},
+    }
+  },
+  created () {
+    this.userInfo = getUser();
+    this.userId = this.$route.params.userId;
+  }
 };
 </script>
 

@@ -4,7 +4,7 @@
     <!-- 面包屑 -->
     <breadcrumb></breadcrumb>
     <!-- 文章内容部分 -->
-    <article-content></article-content>
+    <article-content :postId="postId"></article-content>
   </div>
   <!-- 文章详情页面结束 -->
 </template>
@@ -14,6 +14,12 @@ import breadcrumb from "@/components/breadcrumb";
 import articleContent from "./articleContent";
 export default {
   name: "index",
+  props: {
+    postId: {
+      type: String, 
+      default: ''
+    }
+  },
   components: {
     breadcrumb,
     articleContent,

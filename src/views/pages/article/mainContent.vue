@@ -25,39 +25,39 @@
                 p-id="4705"
               ></path>
             </svg>
-            <span>华为消费者管培求战友</span>
+            <span>{{ post.title }}</span>
           </h1>
           <!-- 帖子的作者信息 -->
           <div class="article-author">
-            <a href="#" class="article-author-avatar">
-              <img src="@/assets/img/avatar.jpg" alt="帖子作者头像" />
+            <a :href="'/user/profile/' + post.authorId" class="article-author-avatar">
+              <img :src="post.authorHead" :alt="post.authorName" />
             </a>
             <div class="article-detail">
               <span>
-                <a href="#" class="article-author-name"> phantom </a>
+                <a :href="'/user/profile/' + post.authorId" class="article-author-name"> {{ post.authorName }} </a>
               </span>
               <div class="article-other">
-                <span class="article-time"> 编辑于 今天 11:26:04 </span>
+                <span class="article-time"> 编辑于 {{ formatTime(post.lastUpdateDate) }} </span>
                 <!-- <span class="article-eq">
                   来自<a href="#" class="link-green">iOS客户端</a>
                 </span> -->
                 <div class="article-info">
-                  <span style="cursor: pointer" class="article-like">
-                    赞 0
+                  <span style="cursor: pointer" class="article-like" @click="likePost()">
+                    赞 {{ post.likeCount }}
                   </span>
                   <span class="article-pipe">|</span>
-                  <span style="cursor: pointer" class="artcle-follow"
-                    >收藏 0</span
+                  <span style="cursor: pointer" class="artcle-follow" @click="collectPost()"
+                    >收藏 {{ post.collectCount }}</span
                   >
                   <span class="article-pipe">|</span>
                   <span style="cursor: pointer" class="article-reply">
                     回复
-                    <span class="article-num">5</span>
+                    <span class="article-num">{{ post.commentCount }}</span>
                   </span>
                   <span class="article-pipe">|</span>
                   <span>
                     浏览
-                    <span class="article-num">345</span>
+                    <span class="article-num">{{ post.viewCount }}</span>
                   </span>
                 </div>
               </div>
@@ -67,8 +67,7 @@
         <div class="article-main">
           <!-- article-content的内容由编辑器生成 -->
           <div class="article-content">
-            英国渣硕一枚。1月7日接到华为电话改志愿消费者管培。1月11日收到测评链接。1月13日收到面试通知。1月15日通过3场面试。1月19日收到语言测试链接并完成。1月21号官网状态更新6个绿灯。
-            状态码 Showstatus 6；Tnext 1 求同批次同学交流交流
+            {{ post.content }}
           </div>
           <!-- 文章的赞、转发、评论 -->
           <div class="article-content-other fill-bg">
@@ -78,7 +77,7 @@
             <ul class="article-content-tool">
               <li>
                 <div class="content-tool-common">
-                  <a href="#" class="content-tool-item">
+                  <a href="javascript:void(0);" class="content-tool-item" @click="likePost()">
                     <svg
                       t="1611483944540"
                       class="icon"
@@ -100,13 +99,13 @@
                         p-id="5582"
                       ></path>
                     </svg>
-                    (0)
+                    ({{  post.likeCount }})
                   </a>
                 </div>
               </li>
               <li>
                 <div class="content-tool-common">
-                  <a href="#" class="content-tool-item">
+                  <a href="javascript:void(0);" class="content-tool-item" @click="collectPost()">
                     <svg
                       t="1611484956952"
                       class="icon"
@@ -123,7 +122,7 @@
                         p-id="7062"
                       ></path>
                     </svg>
-                    (0)
+                    ({{ post.collectCount }})
                   </a>
                 </div>
               </li>
@@ -174,7 +173,7 @@
                         fill="#7171fc"
                       ></path>
                     </svg>
-                    回复(5)
+                    回复({{ post.commentCount }})
                   </a>
                 </div>
               </li>
@@ -186,8 +185,97 @@
 </template>
 
 <script>
+import postApi from "@/common/service/article/index";
+
+import moment from "moment";
+
 export default {
-  name: 'mainContent'
+  name: 'mainContent',
+  props: {
+    postId: {
+      type: String, 
+      default: ''
+    }
+  },
+  data () {
+    return {
+      post: []
+    }
+  },
+  created () {
+    this.getPostDetail(this.postId);
+  },
+  methods: {
+    /* 给帖子点赞 */
+    collectPost() {
+      postApi.collectPost(this.postId).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            message: res.msg,
+            type: 'success',
+            center: true
+          });
+        } else {
+          this.$message({
+            message: res.msg || '收藏失败，请稍后重试',
+            type: 'error',
+            center: true
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.message || '接口异常，请稍后重试'
+        })
+      })
+    },
+    /* 给帖子点赞 */
+    likePost() {
+      postApi.likePost(this.postId).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            message: res.msg,
+            type: 'success',
+            center: true
+          });
+        } else {
+          this.$message({
+            message: res.msg || '点赞失败，请稍后重试',
+            type: 'error',
+            center: true
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.message || '接口异常，请稍后重试'
+        })
+      })
+    },
+    /* 时间格式化 */
+    formatTime(timestamp, format = "YYYY-MM-DD HH:mm:ss") {
+      return moment(timestamp).format(format);
+    },
+    /* 根据帖子id获取帖子具体的内容 */
+    getPostDetail(postId) {
+      postApi.getPostDetail(postId).then(res => {
+        if (res.code === 200) {
+          let data = res.data;
+          this.post = data.post;
+        } else {
+          this.$message({
+            message: res.msg || '获取帖子内容失败，请稍后重试',
+            type: 'error',
+            center: true
+          })
+        }
+      }).catch(err => {
+        this.$message({
+          message: err.message || '接口异常，请稍后重试',
+          type: 'error',
+          center: true
+        })
+      })
+    }
+  }
 }
 </script>
 

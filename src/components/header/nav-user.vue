@@ -4,9 +4,9 @@
     <!-- 用户头像和用户名 -->
     <div class="user-submenu-top">
       <a href="#">
-        <img class="user-submenu-avatar" :src="avatar" />
+        <img class="user-submenu-avatar" :src="userInfo.avatar" />
       </a>
-      <span class="user-submenu-nickname">{{ name }}</span>
+      <span class="user-submenu-nickname">{{ userInfo.username }}</span>
     </div>
     <!-- 用户粉丝、收藏、获赞 -->
     <div class="user-submenu-mid">
@@ -18,7 +18,7 @@
     <div class="user-submenu-bottom">
       <ul class="submenu-bottom">
         <li class="submenu-item">
-          <a href="/user/profile">
+          <a :href="'/user/profile/' + userInfo.userId">
             <svg
               t="1611213240032"
               class="icon"
@@ -69,8 +69,9 @@
 import { removeUser } from "@/common/utils/auth";
 export default {
   name: "nav-user",
-  props: ["name", "avatar"],
+  props: ['userInfo'],
   methods: {
+    /* 退出登录 */
     logout() {
       /* 移除cookie的数据 */
       removeUser();

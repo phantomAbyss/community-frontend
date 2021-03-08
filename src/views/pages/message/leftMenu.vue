@@ -1,4 +1,5 @@
 <template>
+<!-- 当前页面已被弃用，新的消息菜单menu的详细信息见@/views/pages/message/menu文件 -->
   <div class="left-box">
     <!-- 左侧头部部分 -->
     <div class="menu-head">

@@ -7,8 +7,15 @@
     </header>
     <div class="job-info-content">
       <!-- 工作内容展示 -->
-      <div class="job-content" v-if="!isEdit" @click="edit">
-        <div class="edit-btn"><i class="el-icon-edit"></i>编辑</div>
+      <div
+        class="job-content"
+        :class="{ mine: isLoginUser() }"
+        v-if="!isEdit"
+        @click="edit"
+      >
+        <div class="edit-btn" v-if="isLoginUser()">
+          <i class="el-icon-edit"></i>编辑
+        </div>
         <ul>
           <li>
             <div class="content-title">公司名称</div>
@@ -109,8 +116,16 @@ import profileService from "@/common/service/user/profile";
 import { getUser } from "@/common/utils/auth";
 export default {
   name: "jobInfo",
+  props: {
+    userId: {
+      type: String,
+      default: "",
+    },
+  },
   data() {
     return {
+      /* 当前登录的用户的信息 */
+      userInfo: {},
       /* 是否处于编辑状态 */
       isEdit: false,
       /* 工作的展示信息 */
@@ -162,11 +177,20 @@ export default {
           return this.jobOptions[i].name;
         }
       }
-    }
+    },
   },
   methods: {
+    /* 验证是否为当前登录用户 */
+    isLoginUser() {
+      /* console.log(this.userId);
+      console.log(this.baseInfo.userId) */
+      return this.userId == this.userInfo.userId;
+    },
     /* 编辑按钮 */
     edit() {
+      if (!this.isLoginUser()) {
+        return;
+      }
       this.isEdit = true;
     },
     /* 取消编辑 */
@@ -175,34 +199,37 @@ export default {
     },
     /* 更新工作信息 */
     update(formName) {
-      profileService.updateJobInfo({
-        company: this.jobForm.company,
-        position: this.jobForm.position,
-        industry: this.jobForm.industry
-      }).then(res => {
-        console.log("修改工作信息：" + res);
-        let data = res.data;
-        if (data.code == 200) {
-          //回显显示框和编辑框的数据
-          this.jobForm = data.data;
-          this.updateJob = data.data;
-          //隐藏编辑框，只显示显示框
-          this.isEdit = false;
-          this.$message({
-                message: "工作信息修改成功",
-              });
-        } else {
-          this.$message("error", data.msg || "接口异常");
-        }
-      }).catch(error => {
-        if (error.data) {
-          this.$message.error(error.data.msg);
-        }
-      })
+      profileService
+        .updateJobInfo({
+          company: this.jobForm.company,
+          position: this.jobForm.position,
+          industry: this.jobForm.industry,
+        })
+        .then((res) => {
+          console.log("修改工作信息：" + res);
+          let data = res.data;
+          if (data.code == 200) {
+            //回显显示框和编辑框的数据
+            this.jobForm = data.data;
+            this.updateJob = data.data;
+            //隐藏编辑框，只显示显示框
+            this.isEdit = false;
+            this.$message({
+              message: "工作信息修改成功",
+            });
+          } else {
+            this.$message("error", data.msg || "接口异常");
+          }
+        })
+        .catch((error) => {
+          if (error.data) {
+            this.$message.error(error.data.msg);
+          }
+        });
     },
     /* 获取工作信息 */
     getJobInfo() {
-      profileService.getJobInfo(getUser().name).then((res) => {
+      profileService.getJobInfo(this.userInfo.username).then((res) => {
         let data = res.data;
         if (data.code == 200) {
           this.jobForm = data.data;
@@ -215,17 +242,18 @@ export default {
     },
     /* 获取行业信息 */
     getJobList() {
-      profileService.getJobList().then(res => {
+      profileService.getJobList().then((res) => {
         let data = res.data;
         if (data.code == 200) {
           this.jobOptions = data.data;
         }
-      })
-    }
+      });
+    },
   },
   mounted() {
     this.getJobList();
     this.getJobInfo();
+    this.userInfo = getUser();
   },
 };
 </script>
@@ -239,7 +267,7 @@ export default {
 }
 .job-info header {
   width: 100%;
-  height: 64px;
+  height: 35px;
   padding-top: 24px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -271,7 +299,7 @@ export default {
   font-size: 13px;
   margin-left: 40px;
 }
-.job-content:hover {
+.mine:hover {
   background: #f8f8f8;
 }
 .job-content {

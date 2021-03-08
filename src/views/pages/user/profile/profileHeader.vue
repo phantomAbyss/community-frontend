@@ -2,9 +2,9 @@
   <!-- 用户的基础信息开始 -->
   <div class="profile-header">
       <!-- 用户头像部分信息 -->
-      <user-avatar :generalInfo="generalInfo" :nickName="nickName" :userName="userName"></user-avatar>
+      <user-avatar :generalInfo="generalInfo" :userId="userId"></user-avatar>
       <!-- 用户基础信息内容 -->
-      <base-info :baseInfo="baseInfo" ref="baseInfo"></base-info>
+      <base-info :baseInfo="baseInfo" ref="baseInfo" :userId="userId"></base-info>
   </div>
   <!-- 用户的基础信息结束 -->
 </template>
@@ -16,13 +16,19 @@ import baseInfo from './baseInfo';
 import profileService from '@/common/service/user/profile'
 export default {
   name: "profileHeader",
+  props: {
+    userId: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
       userAvatar,
       baseInfo
   },
   data () {
     return {
-      baseInfo: {
+      /* baseInfo: {
         id: '',
         nickname: '',
         realName: '',
@@ -42,29 +48,42 @@ export default {
         nameModify: true
       },
       generalInfo: {
+        userId: '',
+        username: '',
         avatar: '',
         codeAge: 0,
-      },
-      nickName: '',
-      userName: ''
+      } */
+      baseInfo: {},
+      generalInfo: {}
     }
   },
   created () {
     this.getBaseInfo();
+    this.generalInfo.userId = this.userId;
   },
   methods: {
     getBaseInfo() {
       profileService.getBaseInfo().then(res => {
-        let data = res.data.data;
-        if (res.data.code == 200) {
+        if (res.code === 200) {
+          let data = res.data;
           this.baseInfo = data.baseInfo;
           this.generalInfo = data.generalInfo;
-          this.nickName = this.baseInfo.nickname;
-          this.userName = this.baseInfo.id;
           this.$nextTick(() => {
             this.$refs.baseInfo.setUpdateBaseInfoData();
           })
+        } else {
+          this.$message({
+            message: res.message || '获取用户的基本信息失败，请稍后重试',
+            type: 'error',
+            center: true
+          })
         }
+      }).catch(err => {
+        this.$message({
+          message: err.message || '接口异常，请稍后重试',
+          type: 'error',
+          center: true
+        })
       })
     }
   }

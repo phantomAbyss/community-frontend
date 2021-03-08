@@ -9,28 +9,35 @@
       v-infinite-scroll="load"
       infinite-scroll-disabled="disabled"
     >
-      <li class="content-item" v-for="(item, index) in items" :key="index">
+      <li class="content-item" v-for="(item, index) in posts" :key="index">
         <!-- 帖子简介展示 -->
         <div class="content-item-box">
           <!-- 头像 -->
-          <a href="#" class="user-avatar">
-            <img src="@/assets/img/avatar.jpg" />
+          <a
+            :href="'/user/profile/' + item.userInfo.userId"
+            class="user-avatar"
+          >
+            <img :src="item.userInfo.avatar" :alt="item.userInfo.username" />
           </a>
           <!-- 内容 -->
           <div class="content-item-bd">
             <div class="content-info">
               <p>
-                <a href="#" class="name">{{item.nickname}}</a>
+                <a
+                  :href="'/user/profile/' + item.userInfo.userId"
+                  class="name"
+                  >{{ item.userInfo.username }}</a
+                >
               </p>
               <div class="content-time">
                 <a href="#">
-                  <span>{{item.publishTime}}</span>
+                  <span>{{ item.post.publishTime }}</span>
                 </a>
               </div>
             </div>
-            <a href="/article" target="_blank">
+            <a :href="'/article/' + item.post.postId" target="_blank">
               <div class="content-area">
-                {{item.content}}
+                {{ item.post.content }}
                 <!-- <img
                   style="width: 200px; height: 200px; margin-right: 10px"
                   src="@/assets/img/avatar.jpg"
@@ -47,7 +54,7 @@
         <!-- 点赞、评论、转发 -->
         <div class="content-item-ft">
           <!-- 点赞 -->
-          <a href="#" class="flex-item">
+          <a href="javascript:void(0);" class="flex-item">
             <svg
               t="1611229559285"
               class="icon"
@@ -69,10 +76,14 @@
                 p-id="1156"
               ></path>
             </svg>
-            0
+            {{ item.post.like }}
           </a>
           <!-- 评论 -->
-          <a href="/article" target="_blank" class="flex-item">
+          <a
+            :href="'/article/' + item.post.postId"
+            target="_blank"
+            class="flex-item"
+          >
             <svg
               t="1611229879421"
               class="icon"
@@ -89,10 +100,10 @@
                 p-id="3934"
               ></path>
             </svg>
-            10
+            {{ item.post.comment }}
           </a>
           <!-- 转发 -->
-          <a href="#" class="flex-item">
+          <a href="javascript:void(0);" class="flex-item">
             <svg
               t="1611229949107"
               class="icon"
@@ -114,7 +125,7 @@
                 p-id="4791"
               ></path>
             </svg>
-            10
+            {{ item.post.share }}
           </a>
         </div>
       </li>
@@ -126,41 +137,68 @@
 </template>
 
 <script>
-import mainApi from '@/common/service/main/index'
+import mainApi from "@/common/service/main/index";
 export default {
-  name: 'mainContent',
-  data () {
+  name: "mainContent",
+  data() {
     return {
       // count: 3,
-      page: 1,
+      curpage: 1,
+      pageSize: 10,
       loading: false,
-      items: []
-    }
+      posts: [],
+      totalCount: 0,
+    };
   },
   computed: {
-    noMore () {
+    noMore() {
       // return this.count >= 6
-      return this.items.length >= 100;
+      return this.posts.length >= 100;
     },
-    disabled () {
-      return this.loading || this.noMore
-    }
+    disabled() {
+      return this.loading || this.noMore;
+    },
+  },
+  created() {
+    this.getPostList(this.curpage++, this.pageSize, {});
   },
   methods: {
-    load () {
-      this.loading = true
-      setTimeout(() => {
-        // this.count += 2
-        this.page++;
-        mainApi.search(this.page, 10, {}).then(res => {
-          this.items = this.items.concat(res.data.data.rows)
+    /* 分页获取帖子 */
+    getPostList(page, size, data) {
+      mainApi
+        .search(page, size, data)
+        .then((res) => {
+          if (res.code === 200) {
+            let data = res.data;
+            this.posts = this.posts.concat(data.rows);
+          } else {
+            this.$message({
+              message: res.message || "获取帖子信息失败，请稍后重试",
+              type: "error",
+              center: true,
+            });
+          }
           // alert("len = " + this.items.length);
         })
-        this.loading = false
-      }, 2000)
-    }
-  }
-}
+        .catch((err) => {
+          this.$message({
+            message: err.message || "接口异常，请稍后重试",
+            type: "error",
+            center: true,
+          });
+        });
+    },
+    load() {
+      this.loading = true;
+      setTimeout(() => {
+        // this.count += 2
+        this.getPostList(this.curpage, this.pageSize, {});
+        this.page++;
+        this.loading = false;
+      }, 2000);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -230,12 +268,15 @@ p {
   font-size: 16px;
   margin-bottom: 10px;
   vertical-align: middle;
-}
-.content-info .name {
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 5px;
-  color: #25bb9b;
+  p {
+    margin: 0;
+    .name {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+      color: rgb(66, 64, 64);
+    }
+  }
 }
 .content-item-box .content-time {
   position: absolute;
@@ -258,12 +299,19 @@ p {
   font-size: 0;
   display: flex;
 }
-.content-item-ft a {
-  color: #a2a2a2;
-  text-align: center;
-  font-size: 14px;
-  padding: 4px 0;
-  overflow: hidden;
+.content-item-ft {
+  a {
+    color: #a2a2a2;
+    text-align: center;
+    font-size: 14px;
+    padding: 4px 0;
+    overflow: hidden;
+    svg {
+      position: relative;
+      top: 4px;
+      right: 2px;
+    }
+  }
 }
 .content-item-ft a + a {
   border-left: 1px solid #eee;

@@ -7,6 +7,8 @@ export default {
         return request({
             url: `/${group_name}/${api_name}/base/info`,
             method: 'get'
+        }).then(res => {
+            return res.data;
         })
     },
     /* 获取用户的工作信息 */
@@ -43,6 +45,8 @@ export default {
             url: `/${group_name}/${api_name}/base/update`,
             method: 'post',
             data: model
+        }).then(res => {
+          return res.data;
         })
     },
     /* 更新用户的工作信息 */

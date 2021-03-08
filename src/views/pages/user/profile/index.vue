@@ -2,11 +2,11 @@
     <!-- 个人资料页开始 -->
   <div class="user-profile">
       <!-- 个人资料页头部 -->
-      <profile-header></profile-header>
+      <profile-header :userId="userId"></profile-header>
       <!-- 用户的工作信息 -->
-      <job-info></job-info>
+      <job-info :userId="userId"></job-info>
       <!-- 用户的兴趣信息 -->
-      <interest-tag></interest-tag>
+      <interest-tag :userId="userId"></interest-tag>
   </div>
   <!-- 个人资料页结束 -->
 </template>
@@ -18,6 +18,7 @@ import interestTag from './interestTag'
 
 export default {
   name: 'index',
+  props: ['userId'],
   components: {
       profileHeader,
       jobInfo,

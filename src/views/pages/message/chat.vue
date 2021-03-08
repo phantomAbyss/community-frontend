@@ -1,4 +1,5 @@
 <template>
+<!-- 当前页面已被弃用，新的chat组件的详细信息见@/views/pages/message/chat文件夹 -->
   <div class="chat-box">
     <!-- 这是和好友 {{ username }} 的聊天 -->
     <div class="chat-head">

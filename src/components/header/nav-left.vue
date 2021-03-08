@@ -54,10 +54,10 @@ export default {
 <style lang="less" scoped>
 /* 网页logo样式开始 */
 .header-logo {
-  background: url(~@/assets/img/header-logo.jpg) no-repeat;
-  background-size: 100px 50px;
+  background: url(~@/assets/img/community.jpg) no-repeat;
+  background-size: 200px 50px;
   display: block;
-  width: 150px;
+  width: 200px;
   height: 60px;
   float: left;
   margin: 5px 0px 0px 40px;
